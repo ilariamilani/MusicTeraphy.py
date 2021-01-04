@@ -9,6 +9,7 @@ class PlayAudio(object):
         self.FORMAT = pyaudio.paFloat32
         self.AUDIO_FOLDER_PATH = "audio_files/"
         self.CHUNK = 1024
+        #self.reproducing = False
 
 
     def play_audio(self, filename):
@@ -21,7 +22,7 @@ class PlayAudio(object):
                         rate=wf.getframerate(),
                         output=True)
 
-        is_speaking = True
+        reproducing = True
         data = wf.readframes(self.CHUNK)
         while data != '':
             stream.write(data)
@@ -29,6 +30,6 @@ class PlayAudio(object):
         stream.close()
         wf.close()
         p.terminate()
-        is_speaking = False
+        reproducing = False
         return
 

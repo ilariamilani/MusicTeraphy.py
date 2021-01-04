@@ -31,12 +31,12 @@ from playaudio import PlayAudio
 AUDIO_FOLDER_PATH = "audio_files/"
 FILENAMES = "sampson"
 
-is_listening = False
-is_speaking = False
+listening = False
+reproducing = False
 
 
 def listen(time):
-    is_listening = True
+    listening = True
     # varibili per aprire il microfono
     CHUNK = 1024 * 4
     FORMAT = pyaudio.paInt16
@@ -64,7 +64,7 @@ def listen(time):
             silence = 0
         if silence > 5:  # the patient finished speaking/reproducing the melody
             print("NOT_SPEAKING")
-            is_listening = False # the robot finishes to listen to the patient and can take action
+            listening = False # the robot finishes to listen to the patient and can take action
             return
         else:
             print("SPEAKING")
@@ -74,6 +74,7 @@ def listen(time):
 
 
 def main():
+    print(PlayAudio())
     print(os.path.abspath(__file__))
     print(os.path.dirname(os.path.abspath(__file__)))
     os.chdir(os.path.dirname(os.path.abspath(__file__)))  # serve per cambiare working directory
@@ -84,11 +85,11 @@ def main():
     data = json.load(open("script.json"))
     counter = 0
     while True:
-        if not is_listening: # when the robot is not listening to the patient will reproduce the file
+        if not listening: # when the robot is not listening to the patient will reproduce the file
             file_to_play = data["battute"][counter]["filename"]
             PlayAudio().play_audio(file_to_play)
             counter = counter + 1
-        if not is_speaking: # the robot listens to the patient
+        if not reproducing: # the robot listens to the patient
             listen(data["battute"][counter]["durata"])
 
 

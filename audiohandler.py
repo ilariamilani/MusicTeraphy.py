@@ -43,9 +43,13 @@ class AudioHandler(object):
        # print(beat_times)
         return None, pyaudio.paContinue
 
-    def isactive(self):
+    def active_patient(self):
         while (self.stream.is_active()):# if using button you can set self.stream to 0 (self.stream = 0), otherwise you can use a stop condition
             continue
+
+
+
+
 
             #trasformo in funz isactive chiamato da funz listen da main
         #if db> continue
