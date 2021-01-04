@@ -1,0 +1,41 @@
+{
+  "battute": [
+    {
+      "filename": "sampson0",
+      "durata": 0
+    },
+    {
+      "filename": "sampson1",
+      "durata": 3
+    },
+    {
+      "filename": "sampson2",
+      "durata": 3.5
+    },
+    {
+      "filename": "sampson3",
+      "durata": 3.5
+    },
+    {
+      "filename": "sampson4",
+      "durata": 10
+    },
+    {
+      "filename": "sampson5",
+      "durata": 6.5
+    },
+    {
+      "filename": "sampson6",
+      "durata": 3.5
+    },
+    {
+      "filename": "sampson7",
+      "durata": 1
+    },
+    {
+      "filename": "sampson8",
+      "durata": 4
+    }
+
+  ]
+}
