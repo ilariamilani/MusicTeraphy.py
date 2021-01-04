@@ -30,8 +30,9 @@ from playaudio import PlayAudio
 
 AUDIO_FOLDER_PATH = "audio_files/"
 FILENAMES = "sampson"
-active_kid = False
+
 is_listening = False
+is_speaking = False
 
 
 def listen(time):
@@ -42,7 +43,7 @@ def listen(time):
     CHANNELS = 1
     RATE = 44100
 
-    # Stop for a time as long as the short melody played before (time). I'm giving the time to the kid to reproduce the melody
+    # Stop for a time as long as the short melody played before (time). I'm giving the time to the patient to reproduce the melody
     t = Timer()
     t.start()
     while t.elapsed_time() < time:
@@ -52,18 +53,18 @@ def listen(time):
     # After waiting I'll check if he's still trying to reproduce the melody or if he's communicating
     p = pyaudio.PyAudio()
     stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, output=False, frames_per_buffer=CHUNK)
-    silent_kid = 0
+    silence = 0
     while True:
         data = stream.read(CHUNK) #al suo posto posso chiamo metodo audiohandler x capire se ilbimbo parla
         rms = audioop.rms(data, 2)  # quadratic mean of the data
         decibel = 20 * math.log10(rms)  # transforms into db
-        if decibel < 65:  # silent
-            silent_kid += 1
-        else:  # the kid is still speaking/reproducing the melody
-            silent_kid = 0
-        if silent_kid > 5:  # the kid finished speaking/reproducing the melody
+        if decibel < 65:  # silence
+            silence += 1
+        else:  # the patient is still speaking/reproducing the melody
+            silence = 0
+        if silence > 5:  # the patient finished speaking/reproducing the melody
             print("NOT_SPEAKING")
-            is_listening = False # the robot finishes to listen to the kid and can take action
+            is_listening = False # the robot finishes to listen to the patient and can take action
             return
         else:
             print("SPEAKING")
@@ -76,18 +77,18 @@ def main():
     print(os.path.abspath(__file__))
     print(os.path.dirname(os.path.abspath(__file__)))
     os.chdir(os.path.dirname(os.path.abspath(__file__)))  # serve per cambiare working directory
-    PlayAudio().play("sampson0")
+    PlayAudio().play_audio("sampson0")
 
 
 
     data = json.load(open("script.json"))
     counter = 0
     while True:
-        if not is_listening:
+        if not is_listening: # when the robot is not listening to the patient will reproduce the file
             file_to_play = data["battute"][counter]["filename"]
-            play_audio(file_to_play)
+            PlayAudio().play_audio(file_to_play)
             counter = counter + 1
-        if not active_kid:
+        if not is_speaking: # the robot listens to the patient
             listen(data["battute"][counter]["durata"])
 
 
@@ -100,4 +101,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-#crea oggetto speaker x suonare
+
