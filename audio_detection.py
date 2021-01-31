@@ -13,6 +13,7 @@ RATE = 44100 # Record at 44100 samples per second
 CHUNK = 1024 * 2 # Number of samples in a chunk
 # this is the threshold that determines whether or not sound is detected
 THRESHOLD = 45
+LOW_THRESHOLD = 35
 
 clap_time = []
 
@@ -35,9 +36,11 @@ stream = p.open(format=FORMAT,
 stream.start_stream()
 time.sleep(2)
 #t.start()
-i = 0
+Nbeat = 0
 #deltaT = 0.095
 deltaT = 0
+silence = 0 #pause between beats
+noise = 0
 
 # wait until the sound data breaks some level threshold
 while True:
@@ -51,26 +54,35 @@ while True:
     # check level against threshold
     print(decibel)
     if decibel > THRESHOLD:
-        if i == 0:
-            t.start()
+        noise += 1
+        if Nbeat == 0:
+            t.start() #oppure timer parte prima e alla fine sottraggo il valore temporale del primo battito
             print("start timer")
             #clap_time.append(t.elapsed_time())
             clap_time.append(0)
             print("performance started")
             print("clap")
-            print(clap_time[i])
-            i = i + 1
+            print(clap_time[Nbeat])
+            Nbeat += 1
+            silence = 0
         else :
-            deltaT = t.elapsed_time() - clap_time[i-1]
-            if (deltaT > 0.093) :
+            deltaT = t.elapsed_time() - clap_time[Nbeat-1]
+            if (deltaT > 0.093) and (silence >= 1):
                 # test a 85 BPM devo avere un battito ogni 0.7 sec
                 print("clap")
                 clap_time.append(t.elapsed_time())
-                print(clap_time[i])
+                print(clap_time[Nbeat])
                 print(clap_time[:])
-                i = i + 1
-    else:
-        print("silence")
+                Nbeat += 1
+                silence = 0
+            if silence == 0 and noise >= 10 :
+                print("other activity is detected")
+    elif decibel < LOW_THRESHOLD:
+            silence += 1
+            noise = 0
+            #print("silence")
+            if silence >= 20:
+                print("no activity detected from the child")
     continue
 
 t.stop()
