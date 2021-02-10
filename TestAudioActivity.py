@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
 
     os.chdir(os.path.dirname(os.path.abspath(__file__)))  # change working directory
-    PlayAudio().play_audio("sampson0")
+    #PlayAudio().play_audio("sampson0")
 
 
     activity = AudioActivity()

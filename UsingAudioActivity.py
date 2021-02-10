@@ -23,8 +23,6 @@ if __name__ == '__main__':
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
             NSongIdentified += 1
             activity.sequence_identified = 0
-            activity.actual_sequence = None
-            activity.sequence = []
             #activity.p = None
             #activity.stream = None
             break
@@ -32,14 +30,16 @@ if __name__ == '__main__':
             print("Niente")
     while activity.silence < 15: #da mettere in and nel while se funz come or silence < 45
         continue
-    activity.stop()
+    #activity.stop()
     activity.t.stop() #timer stop
 
 
     print("2nd turn")
 
-
-    activity.start(id=1)
+    #activity.actual_sequence = None
+    activity.choice_sequence(id=0)
+    activity.t.start()
+    #activity.start(id=0)
     #PlayAudio().play_audio("sampson0")
     song_time = 10  # durata song
     while activity.t.elapsed_time() < song_time + 2:
@@ -48,8 +48,6 @@ if __name__ == '__main__':
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
             NSongIdentified += 1
             activity.sequence_identified = 0
-            activity.actual_sequence = None
-            activity.sequence = []
             #activity.p = None
             #activity.stream = None
             break
@@ -63,7 +61,7 @@ if __name__ == '__main__':
 
     print("3rd turn")
 
-    activity.initialize_sequences()
+    #activity.initialize_sequences()
     activity.choice_sequence(id=0)
     activity.t.start()
     #activity.start(id=0)
@@ -75,21 +73,21 @@ if __name__ == '__main__':
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
             NSongIdentified += 1
             activity.sequence_identified = 0
-            # activity.actual_sequence = None
-            # activity.sequence = []
             # activity.p = None
             # activity.stream = None
             break
         else:
             print("Niente")
 
-    activity.stop()
+    #activity.stop()
     activity.t.stop()
 
 
     print("4th turn")
 
-    activity.start(id=2)
+    activity.choice_sequence(id=0)
+    activity.t.start()
+    #activity.start(id=2)
     #PlayAudio().play_audio("sampson0")
     song_time = 10  # durata song
     while activity.t.elapsed_time() < song_time + 2:
