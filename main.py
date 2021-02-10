@@ -150,7 +150,7 @@ class AudioHandler(object):
                 self.stream.is_active()):  # if using button you can set self.stream to 0 (self.stream = 0), otherwise you can use a stop condition
                     continue
 
-def main()
+def main():
 audio = AudioHandler()
 audio.start()  # open the the stream
 audio.mainloop()  # main operations with librosa

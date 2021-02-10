@@ -6,6 +6,8 @@ import wave
 from timer import Timer
 from playaudio import PlayAudio
 import numpy as np
+import unittest
+from clap import ClapAnalyzer
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
@@ -17,6 +19,26 @@ LOW_THRESHOLD = 35
 
 clap_time = []
 
+
+def choice_sequence(id):
+    actual_sequence = ClapAnalyzer(
+        sequence[id],
+        deviation_threshold=0.1
+    )
+    actual_sequence.on_clap_sequence(on_sequence_detected)
+
+
+def add_clap(time):
+#    for clap_analyzer in sequence:
+#        clap_analyzer.clap(time)
+    actual_sequence.clap(time)
+
+
+def on_sequence_detected(obj):
+    print("Sequence detected")
+    sequence_identified = 1
+
+sequence_identified = 0
 
 # instantiate PyAudio
 p = pyaudio.PyAudio() # Create an interface to PortAudio
@@ -34,13 +56,25 @@ stream = p.open(format=FORMAT,
 
 # start the stream
 stream.start_stream()
-time.sleep(2)
-#t.start()
+
+# timer start
+t.start() # alla fine sottraggo il valore temporale del primo battito
+print("start timer")
+
 Nbeat = 0
-#deltaT = 0.095
 deltaT = 0
 silence = 0 #pause between beats
 noise = 0
+
+sequence = []
+
+sequence.append([1./8, 1./4, 1./8, 1./4, 1./4])
+sequence.append([1./8, 1./8, 1./4, 1./4, 1./4])
+sequence.append([1, 1])
+
+actual_sequence = None
+
+choice_sequence(1)
 
 # wait until the sound data breaks some level threshold
 while True:
@@ -56,13 +90,14 @@ while True:
     if decibel > THRESHOLD:
         noise += 1
         if Nbeat == 0:
-            t.start() #oppure timer parte prima e alla fine sottraggo il valore temporale del primo battito
-            print("start timer")
-            #clap_time.append(t.elapsed_time())
-            clap_time.append(0)
+            add_clap(t.elapsed_time())
+            if sequence_identified > 0:
+                print("Found")
+            clap_time.append(t.elapsed_time())
             print("performance started")
             print("clap")
             print(clap_time[Nbeat])
+            #self.clap_analyzer.clap(clap_time[Nbeat])
             Nbeat += 1
             silence = 0
         else :
@@ -73,6 +108,10 @@ while True:
                 clap_time.append(t.elapsed_time())
                 print(clap_time[Nbeat])
                 print(clap_time[:])
+                add_clap(t.elapsed_time())
+                if sequence_identified > 0:
+                    print("Found 2")
+                #self.clap_analyzer.clap(clap_time[Nbeat])
                 Nbeat += 1
                 silence = 0
             if silence == 0 and noise >= 10 :

@@ -37,17 +37,19 @@ reproducing = False
 
 def listen(time):
     listening = True
-    # varibili per aprire il microfono
+
+    # variables to open the microphone
     CHUNK = 1024 * 4
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 44100
 
     # Stop for a time as long as the short melody played before (time). I'm giving the time to the patient to reproduce the melody
+    # not only stop but listen with audio handler along this time and more if necessary
     t = Timer()
     t.start()
     while t.elapsed_time() < time:
-        continue
+        continue # analyses the patient's work: call the function haudiohandler callback
     t.stop()
 
     # After waiting I'll check if he's still trying to reproduce the melody or if he's communicating
@@ -71,26 +73,26 @@ def listen(time):
 
 
 
-
-
 def main():
-    print(PlayAudio())
+
     print(os.path.abspath(__file__))
     print(os.path.dirname(os.path.abspath(__file__)))
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))  # serve per cambiare working directory
-    PlayAudio().play_audio("sampson0")
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))  # change working directory
 
 
 
-    data = json.load(open("script.json"))
+
+    #data = json.load(open("script.json"))
     counter = 0
     while True:
         if not listening: # when the robot is not listening to the patient will reproduce the file
-            file_to_play = data["battute"][counter]["filename"]
-            PlayAudio().play_audio(file_to_play)
-            counter = counter + 1
+            PlayAudio().play_audio("sampson0")
+            #file_to_play = data["battute"][counter]["filename"]
+            #PlayAudio().play_audio(file_to_play)
+            #counter = counter + 1
         if not reproducing: # the robot listens to the patient
             listen(data["battute"][counter]["durata"])
+
 
 
     audio = AudioHandler()

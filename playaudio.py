@@ -24,6 +24,7 @@ class PlayAudio(object):
 
         reproducing = True
         data = wf.readframes(self.CHUNK)
+        print(data)
         while data != '':
             stream.write(data)
             data = wf.readframes(self.CHUNK)

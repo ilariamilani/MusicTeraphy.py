@@ -5,6 +5,7 @@ import librosa
 
 
 class AudioHandler(object):
+
     def __init__(self):
         self.FORMAT = pyaudio.paFloat32
         self.CHANNELS = 1
@@ -31,19 +32,25 @@ class AudioHandler(object):
 
     #ogni quanto pyaudio chiama callback???
     def callback(self, in_data, frame_count, time_info, flag):
-        #if robot is not speaking
-        numpy_array = np.frombuffer(in_data, dtype=np.float32)
-        tempo, beat_frames = librosa.beat.beat_track(y=numpy_array, sr=self.RATE)
-        onset_env = librosa.onset.onset_strength(y=numpy_array, sr=self.RATE)
-        pulse = librosa.beat.plp(onset_envelope=onset_env, sr=self.RATE)
-        print('Estimated tempo: {:.2f} beats per minute'.format(tempo))
-        print(beat_frames)
-       # print("Beat principale : ", np.flatnonzero(librosa.util.localmax(pulse)))
-        #beat_times = librosa.frames_to_time(beat_frames, self.RATE)
-       # print(beat_times)
-        return None, pyaudio.paContinue
+        #if robot is not speaking, it will listen to the patient
+        while listening :
+            numpy_array = np.frombuffer(in_data, dtype=np.float32)
+            tempo, beat_frames = librosa.beat.beat_track(y=numpy_array, sr=self.RATE)
+            onset_env = librosa.onset.onset_strength(y=numpy_array, sr=self.RATE)
+            pulse = librosa.beat.plp(onset_envelope=onset_env, sr=self.RATE)
+            print('Estimated tempo: {:.2f} beats per minute'.format(tempo))
+            print(beat_frames)
+            # print("Beat principale : ", np.flatnonzero(librosa.util.localmax(pulse)))
+            # beat_times = librosa.frames_to_time(beat_frames, self.RATE)
+            # print(beat_times)
+            return None, pyaudio.paContinue
 
     def active_patient(self):
+
+        # variables to open the microphone
+        #CHUNK = 1024 * 4
+        #FORMAT = pyaudio.paInt16
+
         while (self.stream.is_active()):# if using button you can set self.stream to 0 (self.stream = 0), otherwise you can use a stop condition
             continue
 
