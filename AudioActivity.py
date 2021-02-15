@@ -31,8 +31,8 @@ class AudioActivity:
     def initialize_sequences(self):
         self.sequence.append([1./4, 1./8, 1./8, 1./4, 1./4])
         self.sequence.append([1./4, 1./4, 1./4, 1./8, 1./8])
-        self.sequence.append([1./4, 1./4, 1./4, 1./4, 1./4, 1./4])
-        self.sequence.append([1, 1])
+        self.sequence.append([1./4, 1./4, 1./8, 1./8, 1./4, 1./4, 1./4])
+        self.sequence.append([1./4, 1./8, 1./8, 1./4])
 
     def start(self, id):
         self.initialize_sequences()

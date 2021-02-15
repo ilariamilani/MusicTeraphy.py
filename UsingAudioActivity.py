@@ -1,21 +1,21 @@
 from AudioActivity import AudioActivity
 import time
 from timer import Timer
-from playaudio import PlayAudio
+from audioplayer import PlayAudio
 import audioop
 import json
+import wave
+import numpy as np
 
-AUDIO_FOLDER_PATH = "audio_files/"
-FILENAMES = "sampson"
+
 
 if __name__ == '__main__':
 
     activity = AudioActivity()
     NSongIdentified = 0
 
-
-    #PlayAudio().play_audio("sampson0")
-    activity.start(id=0)
+    PlayAudio().play("bravo.wav")
+    activity.start(id=3)
     song_time = 4 # durata song
     while activity.t.elapsed_time() < song_time + 2 or activity.silence < 40:
         time.sleep(1.0)
@@ -37,10 +37,9 @@ if __name__ == '__main__':
     print("2nd turn")
 
     #activity.actual_sequence = None
-    activity.choice_sequence(id=0)
-    activity.t.start()
+    activity.choice_sequence(id=2)
     #activity.start(id=0)
-    #PlayAudio().play_audio("sampson0")
+    PlayAudio().play("bravo.wav")
     song_time = 10  # durata song
     while activity.t.elapsed_time() < song_time + 2:
         time.sleep(1.0)
@@ -65,7 +64,7 @@ if __name__ == '__main__':
     activity.choice_sequence(id=0)
     activity.t.start()
     #activity.start(id=0)
-    # PlayAudio().play_audio("sampson0")
+    PlayAudio().play("bravo.wav")
     song_time = 10  # durata song
     while activity.t.elapsed_time() < song_time + 2:
         time.sleep(1.0)
@@ -88,7 +87,7 @@ if __name__ == '__main__':
     activity.choice_sequence(id=0)
     activity.t.start()
     #activity.start(id=2)
-    #PlayAudio().play_audio("sampson0")
+    PlayAudio().play("bravo.wav")
     song_time = 10  # durata song
     while activity.t.elapsed_time() < song_time + 2:
         time.sleep(1.0)
@@ -99,7 +98,6 @@ if __name__ == '__main__':
             break
         else:
             print("Niente")
-    activity.stop()
     activity.t.stop()
 
 
@@ -113,3 +111,54 @@ if __name__ == '__main__':
 
 
     activity.stop()
+
+    activity = AudioActivity()
+    NSongIdentified = 0
+
+    PlayAudio().play("bravo.wav")
+    activity.start(id=0)
+    song_time = 4  # durata song
+    while activity.t.elapsed_time() < song_time + 2 or activity.silence < 40:
+        time.sleep(1.0)
+        if activity.sequence_identified > 0:
+            print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
+            NSongIdentified += 1
+            activity.sequence_identified = 0
+            # activity.p = None
+            # activity.stream = None
+            break
+        else:
+            print("Niente")
+    while activity.silence < 15:  # da mettere in and nel while se funz come or silence < 45
+        continue
+    # activity.stop()
+    activity.t.stop()  # timer stop
+    activity.stop()
+
+
+
+
+    activity2 = AudioActivity()
+    NSongIdentified = 0
+
+    PlayAudio().play("bravo.wav")
+    activity2.start(id=0)
+    song_time = 4  # durata song
+    while activity2.t.elapsed_time() < song_time + 2 or activity2.silence < 40:
+        time.sleep(1.0)
+        if activity2.sequence_identified > 0:
+            print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
+            NSongIdentified += 1
+            activity2.sequence_identified = 0
+            # activity.p = None
+            # activity.stream = None
+            break
+        else:
+            print("Niente")
+    while activity2.silence < 15:  # da mettere in and nel while se funz come or silence < 45
+        continue
+    # activity.stop()
+    activity2.t.stop()  # timer stop
+    activity2.stop()
+
+

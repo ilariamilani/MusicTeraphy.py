@@ -86,7 +86,9 @@ def main():
     counter = 0
     while True:
         if not listening: # when the robot is not listening to the patient will reproduce the file
+            print("play")
             PlayAudio().play_audio("sampson0")
+            print("played")
             #file_to_play = data["battute"][counter]["filename"]
             #PlayAudio().play_audio(file_to_play)
             #counter = counter + 1
