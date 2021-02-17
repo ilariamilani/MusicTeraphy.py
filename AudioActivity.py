@@ -106,7 +106,7 @@ class AudioActivity:
                     self.add_clap(elapsed_time)
                     if self.sequence_identified > 0:
                         print("Found")
-                    self.Nbeat += 1
+                    self.NbeBLuat += 1
                     self.silence = 0
                 if self.silence == 0 and self.noise >= 10:
                     print("other activity is detected")
