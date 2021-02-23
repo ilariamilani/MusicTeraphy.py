@@ -1,7 +1,8 @@
 import pyaudio
 import audioop
 import math
-from timer import Timer
+import time
+#from timer import Timer
 from clap import ClapAnalyzer
 
 FORMAT = pyaudio.paInt16
@@ -16,7 +17,7 @@ LOW_THRESHOLD = 35
 class AudioActivity:
 
     def __init__(self):
-        self.t = Timer()
+        #self.t = Timer()
         self.clap_time = []
         self.sequence_identified = 0
         self.actual_sequence = None
@@ -24,6 +25,7 @@ class AudioActivity:
         self.noise = 0
         self.Nbeat = 0
         self.silence = 0
+        self.elapsed_time = 0
         self.p = None
         self.stream = None
 
@@ -33,6 +35,10 @@ class AudioActivity:
         self.sequence.append([1./4, 1./4, 1./4, 1./8, 1./8])
         self.sequence.append([1./4, 1./4, 1./8, 1./8, 1./4, 1./4, 1./4])
         self.sequence.append([1./4, 1./8, 1./8, 1./4])
+        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo, fra martino, bella lavanderina?,
+        self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4]) #ticchetà
+        self.sequence.append([1./4, 1./4, 2./4, 1./4, 1./4, 2./4]) #opopop
+
 
     def start(self, id):
         self.initialize_sequences()
@@ -50,7 +56,9 @@ class AudioActivity:
         self.stream.start_stream()
 
         # timer start
-        self.t.start()  # alla fine sottraggo il valore temporale del primo battito
+        #self.t.start()  # alla fine sottraggo il valore temporale del primo battito
+        self.t1 = time.perf_counter()
+        self.t2 = 0
         print("start timer")
 
 
@@ -84,29 +92,31 @@ class AudioActivity:
         #print(decibel)
         if decibel > THRESHOLD:
             self.noise += 1
-            elapsed_time = self.t.elapsed_time()
+            #elapsed_time = self.t.elapsed_time()
+            self.t2 = time.perf_counter()
+            self.elapsed_time = self.t2 - self.t1
             if self.Nbeat == 0:
-                self.add_clap(elapsed_time)
+                self.add_clap(self.elapsed_time)
                 if self.sequence_identified > 0:
                     print("Found")
-                self.clap_time.append(elapsed_time)
+                self.clap_time.append(self.elapsed_time)
                 print("performance started")
                 print("clap")
                 print(self.clap_time[self.Nbeat])
                 self.Nbeat += 1
                 self.silence = 0
             else:
-                deltaT = elapsed_time - self.clap_time[self.Nbeat - 1]
+                deltaT = self.elapsed_time - self.clap_time[self.Nbeat - 1]
                 if (deltaT > 0.093) and (self.silence >= 1):
                     # test a 85 BPM devo avere un battito ogni 0.7 sec
                     print("clap")
-                    self.clap_time.append(elapsed_time)
+                    self.clap_time.append(self.elapsed_time)
                     print(self.clap_time[self.Nbeat])
                     print(self.clap_time[:])
-                    self.add_clap(elapsed_time)
+                    self.add_clap(self.elapsed_time)
                     if self.sequence_identified > 0:
                         print("Found")
-                    self.NbeBLuat += 1
+                    self.Nbeat += 1
                     self.silence = 0
                 if self.silence == 0 and self.noise >= 10:
                     print("other activity is detected")
