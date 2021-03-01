@@ -82,7 +82,7 @@ def main():
 
 
 
-    #data = json.load(open("script.json"))
+    data = json.load(open("script.json"))
     counter = 0
     while True:
         if not listening: # when the robot is not listening to the patient will reproduce the file

@@ -6,8 +6,10 @@ import sys
 import time
 import numpy as np
 import math
+import subprocess
 
 from datetime import datetime
+from audioplayer import PlayAudio
 from threading import Thread
 
 #from edgetpu.basic import edgetpu_utils
@@ -142,11 +144,12 @@ def run_demo(args):
     firstTime = True
     lookTo = ""
     meanAngle = 0
+    prevMeanAngle = 0
     prevpreviousAngle = 0
     previousAngle = 0
     angle = 0
     echo = 0
-    soundDirection = 0
+    soundDirection = ""
     interaction = 0
     tooCloseCount = 0
     tooFarCount = 0
@@ -173,7 +176,7 @@ def run_demo(args):
     duration_TOLERANCE = 0
     actual_time_TOLERANCE = 0
     
-
+    PlayAudio().play("sounds/Giochiamo.wav")
     functions_main.send_uno_lights(arduino.ser1,"none") 
     
     while True:
@@ -186,8 +189,20 @@ def run_demo(args):
         echo = 0
         prevpreviousAngle = previousAngle
         previousAngle = angle
+        prevMeanAngle = meanAngle
         #ANGLE from BlueCoin
-        angle = 0 # angle = getangle() !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        subprocess2 = subprocess.Popen("/home/pi/BlueCoin/BlueCoin", shell=True, stdout=subprocess.PIPE)
+        subprocess_return = subprocess2.stdout.read()
+        returnvalue = subprocess_return.decode("utf-8")
+        beg = returnvalue.find("##ANGLE##")
+        end = returnvalue.find("##", beg + 9)
+        stringangle = returnvalue[beg + 9: end]
+        print("result")
+        print(subprocess_return)
+        print(stringangle)
+        angle = int(stringangle)
+        print(angle)
+
 
         # check for voice's direction and echo
         if angle < 0 and (previousAngle >= 0 or prevpreviousAngle >= 0):
@@ -356,11 +371,13 @@ def run_demo(args):
             print("Interaction != 2, I'm not interacting with the human")
             if arduino.old_user != "none": #if an object is detected by the sonar, check if it is a human
                 print("Object detected by sonars")                              
-                if ((meanAngle >= 0) or (soundDirection == "ECHO")):  # voice detected by BlueCoin
+                if ((meanAngle >= 0) or (prevMeanAngle >= 0) or (soundDirection == "ECHO")):  # voice detected by BlueCoin
                     print("Human detected in the FOV")
                     count = 4
                     if meanAngle >= 0:
                         tracking_a_user = functions_main.human_verification(meanAngle, arduino.old_user, count)  # it check if obstacle detected from sonar is a human
+                    elif prevMeanAngle >= 0: # voice detected in the previous cycle
+                        tracking_a_user = functions_main.human_verification(prevMeanAngle, arduino.old_user, count)  # it check if obstacle detected from sonar is a human
                     elif soundDirection == "ECHO": # check which one of the angle detected corresponds to what the sonar found
                         tracking_a_user = functions_main.human_verification(angle, arduino.old_user, count) #it check if obstacle detected from sonar is a human
                         if tracking_a_user == False:

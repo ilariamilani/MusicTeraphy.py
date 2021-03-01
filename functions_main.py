@@ -1,5 +1,6 @@
 import serial
-from subprocess import run 
+from subprocess import run
+from audioplayer import PlayAudio
 
 previous_action = "none"
 next_action = "none"
@@ -55,31 +56,31 @@ def send_initial_action_arduino(action, ser, sound):
 def reproduce_action_sound(action):
     if(action!="none" and action!="move_find"):
         if(action == "excited"):
-            run("lxterminal -e omxplayer --vol 600 sounds/Giochiamo.mp3 &", shell=True)
-            run("lxterminal -e omxplayer --vol 600 sounds/Excited_R2D2.mp3 &",shell=True)
+            PlayAudio().play("sounds/Giochiamo.wav")
+            PlayAudio().play("sounds/Excited_R2D2.wav")
         elif(action == "sad"):
-            run("lxterminal -e omxplayer --vol 600 sounds/Sad_R2D2.mp3 &",shell=True)
+            PlayAudio().play("sounds/Sad_R2D2.wav")
         elif(action == "out"):
-            run("lxterminal -e omxplayer --vol 600 sounds/Playful_R2D2.mp3 &",shell=True)
+            PlayAudio().play("sounds/Playful_R2D2.wav")
         elif(action == "found"):
-            run("lxterminal -e omxplayer --vol 600 sounds/founding.mp3 &",shell=True)
+            PlayAudio().play("sounds/founding.wav")
         elif(action == "move"):
-            run("lxterminal -e omxplayer --vol 600 sounds/fordward.mp3 &",shell=True)
+            PlayAudio().play("sounds/fordward.wav")
         elif(action == "excited_attract"): #robot identifies the user in front of it, ready to interact
-            run("lxterminal -e omxplayer --vol 600 sounds/Excited_R2D2.mp3 &",shell=True)
+            PlayAudio().play("sounds/Excited_R2D2.wav")
         elif(action == "interested_excited"):
-            run("lxterminal -e omxplayer --vol 600 sounds/Giochiamo.mp3 &", shell=True)
+            PlayAudio().play("sounds/Giochiamo.wav")
         elif(action == "happy"): #after receiving a hug
-            run("lxterminal -e omxplayer --vol 600 sounds/wow.mp3 &", shell=True)
-            run("lxterminal -e omxplayer --vol 600 sounds/cheBello.mp3 &",shell=True)
+            PlayAudio().play("sounds/wow.wav")
+            PlayAudio().play("sounds/cheBello.wav")
         elif(action == "very_scared"):
-            run("lxterminal -e omxplayer --vol 600 sounds/AhiaBasta.mp3 &",shell=True)
-            run("lxterminal -e omxplayer --vol 600 sounds/Screaming_R2D2.mp3 &", shell=True)
+            PlayAudio().play("sounds/AhiaBasta.wav")
+            #also the scream??
         elif(action == "scared"):
-            run("lxterminal -e omxplayer --vol 600 sounds/ahiaCheMale.mp3 &",shell=True)
+            PlayAudio().play("sounds/ahiaCheMale.wav")
         elif(action == "angry"):
-            run("lxterminal -e omxplayer --vol 600 sounds/No.mp3 &", shell=True)
-            run("lxterminal -e omxplayer --vol 600 sounds/Snappy_R2D2.mp3 &",shell=True)
+            PlayAudio().play("sounds/No.wav")
+            PlayAudio().play("sounds/Snappy_R2D2.wav")
             
 def decide_action(action):
     global previous_action

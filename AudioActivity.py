@@ -32,12 +32,14 @@ class AudioActivity:
 
     def initialize_sequences(self):
         self.sequence.append([1./4, 1./8, 1./8, 1./4, 1./4])
-        self.sequence.append([1./4, 1./4, 1./4, 1./8, 1./8])
-        self.sequence.append([1./4, 1./4, 1./8, 1./8, 1./4, 1./4, 1./4])
-        self.sequence.append([1./4, 1./8, 1./8, 1./4])
-        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo, fra martino, bella lavanderina?,
-        self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4]) #ticchetà
-        self.sequence.append([1./4, 1./4, 2./4, 1./4, 1./4, 2./4]) #opopop
+        self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4])  # ticchetà
+        self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4])  # opopop
+        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo
+        self.sequence.append([1./4, 1./4, 1./4, 1./8, 1./4, 1./4, 1./4]) #queen
+        self.sequence.append([1./4, 1./4, 1./4, 1./16, 1./4, 1./4, 1./4]) #queen
+        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo
+        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo
+        # fra martino, bella lavanderina?
 
 
     def start(self, id):

@@ -6,8 +6,13 @@ import audioop
 import json
 import wave
 import numpy as np
+import os
 
-
+#AUDIO_FOLDER_PATH = "sounds/"
+print(os.path.abspath(__file__))
+print(os.path.dirname(os.path.abspath(__file__)))
+os.chdir(os.path.dirname(os.path.abspath(__file__)))  # change working directory
+PlayAudio().play("sounds/AttentiallaMusica1.wav")
 
 if __name__ == '__main__':
 
@@ -15,10 +20,11 @@ if __name__ == '__main__':
     NSongIdentified = 0
 
     i=3
+
     PlayAudio().play("bravo.wav")
     activity.start(id=i)
     song_time = 4 # durata song
-    while activity.t.elapsed_time() < song_time + 2 or activity.silence < 40:
+    while activity.elapsed_time() < song_time + 2 or activity.silence < 40:
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
@@ -32,7 +38,6 @@ if __name__ == '__main__':
     while activity.silence < 15: #da mettere in and nel while se funz come or silence < 45
         continue
     #activity.stop()
-    activity.t.stop() #timer stop
 
 
     print("2nd turn")
@@ -41,7 +46,7 @@ if __name__ == '__main__':
     activity.choice_sequence(2)
     #activity.start(id=0)
     song_time = 10  # durata song
-    while activity.t.elapsed_time() < song_time + 2:
+    while activity.elapsed_time() < song_time + 2:
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
@@ -56,16 +61,14 @@ if __name__ == '__main__':
         continue
     print("stop: next")
     #activity.stop()
-    activity.t.stop()  # timer stop
 
     print("3rd turn")
     #PlayAudio().play("bravo.wav")
     #activity.initialize_sequences()
     activity.choice_sequence(id=0)
-    activity.t.start()
     #activity.start(id=0)
     song_time = 10  # durata song
-    while activity.t.elapsed_time() < song_time + 2:
+    while activity.elapsed_time() < song_time + 2:
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
@@ -78,16 +81,14 @@ if __name__ == '__main__':
             print("Niente")
 
     #activity.stop()
-    activity.t.stop()
 
 
     print("4th turn")
     #PlayAudio().play("bravo.wav")
     activity.choice_sequence(0)
-    activity.t.start()
     #activity.start(id=2)
     song_time = 10  # durata song
-    while activity.t.elapsed_time() < song_time + 2:
+    while activity.elapsed_time() < song_time + 2:
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
@@ -96,7 +97,6 @@ if __name__ == '__main__':
             break
         else:
             print("Niente")
-    activity.t.stop()
 
 
 
@@ -113,11 +113,10 @@ if __name__ == '__main__':
 
     #PlayAudio().play("bravo.wav")
     activity = AudioActivity()
-    NSongIdentified = 0
 
     activity.start(id=0)
     song_time = 4  # durata song
-    while activity.t.elapsed_time() < song_time + 2 or activity.silence < 40:
+    while activity.elapsed_time() < song_time + 2 or activity.silence < 40:
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
@@ -131,7 +130,6 @@ if __name__ == '__main__':
     while activity.silence < 15:  # da mettere in and nel while se funz come or silence < 45
         continue
     # activity.stop()
-    activity.t.stop()  # timer stop
     activity.stop()
 
 
@@ -142,7 +140,7 @@ if __name__ == '__main__':
 
     activity2.start(id=0)
     song_time = 4  # durata song
-    while activity2.t.elapsed_time() < song_time + 2 or activity2.silence < 40:
+    while activity2.elapsed_time() < song_time + 2 or activity2.silence < 40:
         time.sleep(1.0)
         if activity2.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
@@ -156,7 +154,6 @@ if __name__ == '__main__':
     while activity2.silence < 15:  # da mettere in and nel while se funz come or silence < 45
         continue
     # activity.stop()
-    activity2.t.stop()  # timer stop
     activity2.stop()
 
 
