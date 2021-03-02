@@ -31,7 +31,7 @@ class AudioActivity:
 
 
     def initialize_sequences(self):
-        self.sequence.append([1./4, 1./8, 1./8, 1./4, 1./4])
+        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo
         self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4])  # ticchetà
         self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4])  # opopop
         self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo
@@ -67,7 +67,7 @@ class AudioActivity:
     def choice_sequence(self, id):
         self.actual_sequence = ClapAnalyzer(
             self.sequence[id],
-            deviation_threshold=0.1
+            deviation_threshold=0.15
         )
         self.actual_sequence.on_clap_sequence(self.on_sequence_detected)
 

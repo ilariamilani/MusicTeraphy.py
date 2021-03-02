@@ -1,5 +1,5 @@
 class ClapAnalyzer:
-    def __init__(self, note_lengths, deviation_threshold=0.1):
+    def __init__(self, note_lengths, deviation_threshold=0.15):
         """
         :param note_lengths: Relative note lengths in the rhythmic pattern. F.ex. [2, 1, 1, 2, 2]
         :param deviation_threshold: How much deviation from the pattern should be considered failure
