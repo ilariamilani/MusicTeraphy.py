@@ -12,7 +12,7 @@ import os
 print(os.path.abspath(__file__))
 print(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(os.path.dirname(os.path.abspath(__file__)))  # change working directory
-PlayAudio().play("sounds/AttentiallaMusica1.wav")
+#PlayAudio().play("sounds/AttentiallaMusica1.wav")
 
 if __name__ == '__main__':
 
@@ -24,7 +24,23 @@ if __name__ == '__main__':
     PlayAudio().play("bravo.wav")
     activity.start(id=i)
     song_time = 4 # durata song
-    while activity.elapsed_time() < song_time + 2 or activity.silence < 40:
+    while activity.elapsed_time < song_time + 2 or activity.silence < 40:
+        time.sleep(1.0)
+        if activity.sequence_identified > 0:
+            print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
+            NSongIdentified += 1
+            activity.sequence_identified = 0
+            #activity.p = None
+            #activity.stream = None
+            break
+        else:
+            print("Niente")
+    while activity.silence < 15: #da mettere in and nel while se funz come or silence < 45
+        continue
+
+    PlayAudio().play("bravo.wav")
+
+    while activity.elapsed_time < song_time + 2 or activity.silence < 40:
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
@@ -40,13 +56,15 @@ if __name__ == '__main__':
     #activity.stop()
 
 
+    print(".")
     print("2nd turn")
+    print(".")
     #PlayAudio().play("bravo.wav")
     #activity.actual_sequence = None
     activity.choice_sequence(2)
     #activity.start(id=0)
     song_time = 10  # durata song
-    while activity.elapsed_time() < song_time + 2:
+    while activity.elapsed_time < song_time + 2:
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
@@ -68,7 +86,7 @@ if __name__ == '__main__':
     activity.choice_sequence(id=0)
     #activity.start(id=0)
     song_time = 10  # durata song
-    while activity.elapsed_time() < song_time + 2:
+    while activity.elapsed_time < song_time + 2:
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
@@ -88,7 +106,7 @@ if __name__ == '__main__':
     activity.choice_sequence(0)
     #activity.start(id=2)
     song_time = 10  # durata song
-    while activity.elapsed_time() < song_time + 2:
+    while activity.elapsed_time < song_time + 2:
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
@@ -116,7 +134,7 @@ if __name__ == '__main__':
 
     activity.start(id=0)
     song_time = 4  # durata song
-    while activity.elapsed_time() < song_time + 2 or activity.silence < 40:
+    while activity.elapsed_time < song_time + 2 or activity.silence < 40:
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
@@ -140,7 +158,7 @@ if __name__ == '__main__':
 
     activity2.start(id=0)
     song_time = 4  # durata song
-    while activity2.elapsed_time() < song_time + 2 or activity2.silence < 40:
+    while activity2.elapsed_time < song_time + 2 or activity2.silence < 40:
         time.sleep(1.0)
         if activity2.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")

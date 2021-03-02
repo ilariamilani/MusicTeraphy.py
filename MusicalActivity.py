@@ -152,7 +152,7 @@ if __name__ == '__main__':
             print(".")
 
         if (song == NSongsinLevel): #end of the level
-            if NSongIdentified > 2:
+            if NSongIdentified >= 3: #50% correct ((NSongsinLevel - 1) / 2)
                 print(".")
                 print("yeeeeeeeeeeeeeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy ready fot the next level")
                 print(".")
