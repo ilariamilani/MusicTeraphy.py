@@ -26,13 +26,15 @@ def reproduce_song(level, Nsong):
             PlayAudio().play("sounds/ToccaATe.wav")
         elif (Nsong == 5):
             PlayAudio().play("sounds/OraToccaAMe.wav")
+        elif (Nsong == 6):
+            PlayAudio().play("sounds/CantaConMe.wav")
     if (level == 1):
         if (Nsong == 0):
             PlayAudio().play("sounds/AttentiallaMusica1.wav")
         elif (Nsong == 1):
-            PlayAudio().play("sounds/Snappy_R2D2.wav")
+            PlayAudio().play("sounds/tatittitata.wav")
         elif (Nsong == 2):
-            PlayAudio().play("sounds/Snappy_R2D2.wav")
+            PlayAudio().play("sounds/tatittitata.wav")
         elif (Nsong == 3):
             PlayAudio().play("sounds/tichetà.wav")
         elif (Nsong == 4):
@@ -103,19 +105,23 @@ if __name__ == '__main__':
         NSongIdentified = 0
         while song < NSongsinLevel:
             song += 1
-            if (song % 2) != 0: #every time a new song is played (odd number)(every song is reproduced twice)
+            if song == NSongsinLevel:
+                print("end of level")
+                break
+            if (((song % 2) != 0) and (song != NSongsinLevel)): #every time a new song is played (odd number)(every song is reproduced twice)
                 reproduce_song(MA_interactionLevel, 0) #suona con me!
+            if song == NSongsinLevel:
+                reproduce_song(MA_interactionLevel, 6)  # canta con me!
             if song == 2:
                 reproduce_song(MA_interactionLevel, 5)  # ora tocca a me!
             reproduce_song(ActivityLevel, song)
             if song == 1:
                 reproduce_song(MA_interactionLevel, 4) #tocca a te!
-            if song == NSongsinLevel: #sostituisci canta con me a suona con me prima di riprodurre
-                print("end of level")
-                break
+
 
             activity = AudioActivity()
             activity.start(id=Nid)
+            print("id=")
             print(Nid)
             if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
                 Nid += 1
@@ -126,6 +132,7 @@ if __name__ == '__main__':
                     print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
                     NSongIdentified += 1
                     activity.sequence_identified = 0
+                    time.sleep(1.5)
                     break
                 #else:
                     #print("Niente")
@@ -145,6 +152,7 @@ if __name__ == '__main__':
                 print("yeeeeeeeeeeeeeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy ready fot the next level")
                 print(".")
                 reproduce_song(MA_interactionLevel, 1)  # wow, bravo! reproduced when the level has been passed
+                reproduce_song(ActivityLevel, song)
                 ActivityLevel += 1
             else:
                 print(".")
@@ -152,7 +160,7 @@ if __name__ == '__main__':
                 print(".")
                 reproduce_song(MA_interactionLevel, 3)  # riproviamo
                 # if the child was not able to pass to the next level, the same will be reproposed
-                Nid =- 3 # ((NSongsinLevel - 1) / 2)
+                Nid -= ((NSongsinLevel - 1) // 2)
         song += 1
         reproduce_song(ActivityLevel, song)
 

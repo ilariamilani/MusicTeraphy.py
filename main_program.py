@@ -401,9 +401,9 @@ def run_demo(args):
                             functions_main.send_uno_lights(arduino.ser1, "move")
                             functions_main.send_initial_action_arduino("move", arduino.ser, "move")
                         elif (soundDirection == "RIGHT"):
-                                print("Human detected in right position...")
-                                functions_main.send_uno_lights(arduino.ser1, "rotateRight")
-                                functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
+                            print("Human detected in right position...")
+                            functions_main.send_uno_lights(arduino.ser1, "rotateRight")
+                            functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
                         elif (soundDirection == "LEFT"):
                             print("Human detected in left position...")
                             functions_main.send_uno_lights(arduino.ser1, "rotateLeft")
@@ -412,7 +412,7 @@ def run_demo(args):
                             print("Human detected in back position...")
                             functions_main.send_uno_lights(arduino.ser1, "rotateRight")
                             functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
-                            #functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none") rifare gira a dx 2 volte????????????????????????????????????????????????????????????????????????????????????????????????????
+                            functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
                 else : #if there is no human (no angle from BlueCoin), but object detected from sonar
                     #GET CLOSER TO THE OBJECT! maybe the child is to far for the BlueCoin to detect his voice
                     if arduino.new_dist > 120.0:  # if the distance to the chld is bigger than , get closer
@@ -450,7 +450,7 @@ def run_demo(args):
                             print("Searching back...")
                             functions_main.send_uno_lights(arduino.ser1, "rotateRight")
                             functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
-                            #functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none") rifare gira a dx 2 volte????????????????????????????????????????????????????????????????????????????????????????????????????
+                            functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
                 else: #if there is no human: no sounds perceived from BlueCoin
                     if waitingForSounds < 3:
                         if waitingForSounds == 0:
@@ -496,7 +496,7 @@ def run_demo(args):
                             print("INTERACTION LOOP - Child is on the back ")
                             functions_main.send_uno_lights(arduino.ser1, "rotateRight")
                             functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
-                            #functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none") rifare gira a dx 2 volte????????????????????????????????
+                            functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
                         elif ((soundDirection == "NONE") or (soundDirection == "ECHO")): #if no sounds perceived from BlueCoin
                             if waitingForSounds < 3:
                                  if waitingForSounds == 0:
@@ -516,22 +516,25 @@ def run_demo(args):
                         functions_main.send_initial_action_arduino("scared", arduino.ser, "move_find")
                         tooCloseCount = 0
                 else: #if it's closer than 1.5m perform the interaction loop normally and select action of the child (child_action)
-                    # Run Object Detection. I start now the timer for human time out because else comprehend 20 < dist 130 AND dist = Max dist, so no object sensed by the sonar
+                    # Run Object Detection. I start now the timer for human time out because else comprehend no object sensed by the sonar
                     tooCloseCount = 0
                     tooFarCount = 0
                     current_time_out_system_hum = time.time()
                     time_out_system_hum = time_out_system_hum+(current_time_out_system_hum-start_time_out_system_hum)
                     start_time_out_system_hum = current_time_out_system_hum
+
                     if (soundDirection == "RIGHT"):
                         lookTo = "rotateRight"
+                        time_out_system_hum = 0
                     elif (soundDirection == "LEFT"):
                         lookTo = "rotateLeft"
+                        time_out_system_hum = 0
                     elif (soundDirection == "BACK"):
                         lookTo = "rotateRight"
-                        # lookTo = "rotateRight" rifare gira a dx 2 volte????????????????????????????????
+                        time_out_system_hum = 0
 
                     print("INTERACTION LOOP - Correctly interacting, waiting to receive an action")
-                    time_out_system_hum = 0
+
                     if firstTime:
                             functions_main.send_uno_lights(arduino.ser1,"excited_attract")
                             functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract")
@@ -566,8 +569,6 @@ def run_demo(args):
                     time_out_system_hum = 0   
                     time_out_system = 0                     
                 else:
-                    if waitingForSounds < 3:
-                        waitingForSounds += 1
                     print("INTERACTION LOOP - Searching")
                     functions_main.send_uno_lights(arduino.ser1, "none")
                     functions_main.send_initial_action_arduino(lookTo, arduino.ser, "none")

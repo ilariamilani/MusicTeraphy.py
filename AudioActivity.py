@@ -10,8 +10,8 @@ CHANNELS = 1
 RATE = 44100 # Record at 44100 samples per second
 CHUNK = 1024 * 2 # Number of samples in a chunk
 # this is the threshold that determines whether or not sound is detected
-THRESHOLD = 45
-LOW_THRESHOLD = 35
+THRESHOLD = 60 #45
+LOW_THRESHOLD = 55 #35
 
 
 class AudioActivity:
@@ -31,14 +31,24 @@ class AudioActivity:
 
 
     def initialize_sequences(self):
-        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo
-        self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4])  # ticchetà
-        self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4])  # opopop
-        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo
-        self.sequence.append([1./4, 1./4, 1./4, 1./8, 1./4, 1./4, 1./4]) #queen
-        self.sequence.append([1./4, 1./4, 1./4, 1./16, 1./4, 1./4, 1./4]) #queen
-        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo
-        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo
+        self.sequence.append([1./4, 1./8, 1./8, 1./4, 1./4])  #tatititata                             0
+        self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4])  # ticchetà                        1
+        self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4])  # opopop                          2
+        self.sequence.append([1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./4]) #giro giro tondo       3
+        self.sequence.append([1./4, 1./4, 1./4, 1./8, 1./8, 1./4, 1./4]) #queen                       4
+        self.sequence.append([1./4, 1./4, 1./4, 1./8, 1./8, 1./4, 1./4]) #queen                       5
+        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo       6
+        self.sequence.append([1./4, 1./4, 1./4, 1./4]) #giro giro tondo                               7
+        self.sequence.append([1./5, 1./5, 1./5, 1./5])  # giro giro tondo short                       8
+        self.sequence.append([1./6, 1./6, 1./6, 1./6]) #giro giro tondo short                         9
+        self.sequence.append([1./7, 1./7, 1./7, 1./7])  # giro giro tondo short                       10
+        self.sequence.append([1./8, 1./8, 1./8, 1./8])  # giro giro tondo short                       11
+
+
+
+        self.sequence.append([1./7, 1./7, 1./7, 1./7])  # giro giro tondo short                       11
+        self.sequence.append([1./6, 1./6, 1./6, 1./4, 1./6, 1./6])  # opopop                          12
+        self.sequence.append([1./4, 1./8, 1./8, 1./4])  # tatititata                                  13
         # fra martino, bella lavanderina?
 
 
@@ -67,7 +77,7 @@ class AudioActivity:
     def choice_sequence(self, id):
         self.actual_sequence = ClapAnalyzer(
             self.sequence[id],
-            deviation_threshold=0.15
+            deviation_threshold=0.2
         )
         self.actual_sequence.on_clap_sequence(self.on_sequence_detected)
 

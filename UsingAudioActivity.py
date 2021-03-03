@@ -9,20 +9,58 @@ import numpy as np
 import os
 
 #AUDIO_FOLDER_PATH = "sounds/"
-print(os.path.abspath(__file__))
-print(os.path.dirname(os.path.abspath(__file__)))
-os.chdir(os.path.dirname(os.path.abspath(__file__)))  # change working directory
+#print(os.path.abspath(__file__))
+#print(os.path.dirname(os.path.abspath(__file__)))
+#os.chdir(os.path.dirname(os.path.abspath(__file__)))  # change working directory
 #PlayAudio().play("sounds/AttentiallaMusica1.wav")
 
 if __name__ == '__main__':
 
-    activity = AudioActivity()
+    answerTime = 8.0
     NSongIdentified = 0
 
-    i=3
 
+
+    activity = AudioActivity()
+    activity.sequence_identified = 0
+    activity.start(id=12)
+    while activity.elapsed_time < answerTime or activity.silence < 40:  # definesongtime #wait in case the child is still playing
+        time.sleep(1.0)
+        if activity.sequence_identified > 0:
+            print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo 1")
+            NSongIdentified += 1
+            activity.sequence_identified = 0
+            break
+        # else:
+        # print("Niente")
+    while activity.silence < 15:  # wait in case the child is still playing
+        continue
+    activity.stop()
+
+    activity = AudioActivity()
+    NSongIdentified = 0
+    activity.start(id=12)
+    activity.sequence_identified = 0
+    while activity.elapsed_time < (answerTime * 2) or activity.silence < 40:  # definesongtime #wait in case the child is still playing
+        time.sleep(1.0)
+        if activity.sequence_identified > 0:
+            print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo 2")
+            NSongIdentified += 1
+            activity.sequence_identified = 0
+            break
+        # else:
+        # print("Niente")
+    while activity.silence < 15:  # wait in case the child is still playing
+        continue
+    activity.stop()
+    if NSongIdentified == 2:
+        print("giro giro tondo identified!!!")
+
+
+    activity = AudioActivity()
+    NSongIdentified = 0
     PlayAudio().play("bravo.wav")
-    activity.start(id=i)
+    activity.start(id=0)
     song_time = 4 # durata song
     while activity.elapsed_time < song_time + 2 or activity.silence < 40:
         time.sleep(1.0)
@@ -37,6 +75,46 @@ if __name__ == '__main__':
             print("Niente")
     while activity.silence < 15: #da mettere in and nel while se funz come or silence < 45
         continue
+    activity.stop()
+
+    activity = AudioActivity()
+    NSongIdentified = 0
+    PlayAudio().play("bravo.wav")
+    activity.start(id=1)
+    song_time = 4  # durata song
+    while activity.elapsed_time < song_time + 2 or activity.silence < 40:
+        time.sleep(1.0)
+        if activity.sequence_identified > 0:
+            print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
+            NSongIdentified += 1
+            activity.sequence_identified = 0
+            # activity.p = None
+            # activity.stream = None
+            break
+        else:
+            print("Niente")
+    while activity.silence < 15:  # da mettere in and nel while se funz come or silence < 45
+        continue
+    activity.stop()
+
+    activity = AudioActivity()
+    NSongIdentified = 0
+    activity.start(id=3)
+    song_time = 4  # durata song
+    while activity.elapsed_time < song_time + 2 or activity.silence < 40:
+        time.sleep(1.0)
+        if activity.sequence_identified > 0:
+            print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
+            NSongIdentified += 1
+            activity.sequence_identified = 0
+            # activity.p = None
+            # activity.stream = None
+            break
+        else:
+            print("Niente")
+    while activity.silence < 15:  # da mettere in and nel while se funz come or silence < 45
+        continue
+
 
     PlayAudio().play("bravo.wav")
 
