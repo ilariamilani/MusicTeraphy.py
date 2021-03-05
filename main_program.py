@@ -583,9 +583,6 @@ with suppress_stdout_stderr():
                     child_action = "QUIT"
 
             ####-----END HUMAN INTERACTION----####
-
-    ##CAM        oldTargetBox = targetBox.copy()
-
             t2 = time.perf_counter()
             elapsedTime = t2-t1
             fps = 1/elapsedTime
