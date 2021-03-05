@@ -37,12 +37,14 @@ class AudioActivity:
         self.sequence.append([1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./4]) #giro giro tondo       3
         self.sequence.append([1./4, 1./4, 1./4, 1./8, 1./8, 1./4, 1./4]) #queen                       4
         self.sequence.append([1./4, 1./4, 1./4, 1./8, 1./8, 1./4, 1./4]) #queen                       5
-        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo       6
-        self.sequence.append([1./4, 1./4, 1./4, 1./4]) #giro giro tondo                               7
-        self.sequence.append([1./5, 1./5, 1./5, 1./5])  # giro giro tondo short                       8
-        self.sequence.append([1./6, 1./6, 1./6, 1./6]) #giro giro tondo short                         9
-        self.sequence.append([1./7, 1./7, 1./7, 1./7])  # giro giro tondo short                       10
-        self.sequence.append([1./8, 1./8, 1./8, 1./8])  # giro giro tondo short                       11
+        self.sequence.append([1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./4]) #fra martino           6
+        self.sequence.append([1./4, 1./4, 2./4, 1./4, 1./4, 2./4]) #fra martino 2 & din don dan       7
+        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo       8
+        self.sequence.append([1./4, 1./4, 1./4, 1./4]) #giro giro tondo                               9
+        self.sequence.append([1./5, 1./5, 1./5, 1./5])  # giro giro tondo short                       10
+        self.sequence.append([1./6, 1./6, 1./6, 1./6]) #giro giro tondo short                         11
+        self.sequence.append([1./7, 1./7, 1./7, 1./7])  # giro giro tondo short                       12
+        self.sequence.append([1./8, 1./8, 1./8, 1./8])  # giro giro tondo short                       13
 
 
 

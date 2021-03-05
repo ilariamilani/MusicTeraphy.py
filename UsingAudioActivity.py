@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     activity = AudioActivity()
     activity.sequence_identified = 0
-    activity.start(id=12)
+    activity.start(id=6)
     while activity.elapsed_time < answerTime or activity.silence < 40:  # definesongtime #wait in case the child is still playing
         time.sleep(1.0)
         if activity.sequence_identified > 0:
@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
     activity = AudioActivity()
     NSongIdentified = 0
-    activity.start(id=12)
+    activity.start(id=7)
     activity.sequence_identified = 0
     while activity.elapsed_time < (answerTime * 2) or activity.silence < 40:  # definesongtime #wait in case the child is still playing
         time.sleep(1.0)

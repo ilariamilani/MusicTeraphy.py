@@ -113,5 +113,76 @@ def obtain_user_state(action):
     elif action == "strongHug": state_user = "gaming_aggressive"
     else: state_user = state_user        
         
-    
+def reproduce_song(level, Nsong):
+    if (level == 0): #interaction with the user
+        if (Nsong == 0):
+            PlayAudio().play("sounds/SuonaConMe.wav")
+        elif (Nsong == 1):
+            PlayAudio().play("sounds/wow.wav")
+            PlayAudio().play("sounds/CheBravo.wav")
+        elif (Nsong == 2):
+            PlayAudio().play("sounds/wow.wav")
+            PlayAudio().play("sounds/Evviva.wav")
+        elif (Nsong == 3):
+            PlayAudio().play("sounds/Riproviamo.wav")
+        elif (Nsong == 4):
+            PlayAudio().play("sounds/ToccaATe.wav")
+        elif (Nsong == 5):
+            PlayAudio().play("sounds/OraToccaAMe.wav")
+        elif (Nsong == 6):
+            PlayAudio().play("sounds/CantaConMe.wav")
+    if (level == 1):
+        if (Nsong == 0):
+            PlayAudio().play("sounds/AttentiallaMusica1.wav")
+        elif (Nsong == 1):
+            PlayAudio().play("sounds/tatittitata.wav")
+        elif (Nsong == 2):
+            PlayAudio().play("sounds/tatittitata.wav")
+        elif (Nsong == 3):
+            PlayAudio().play("sounds/tichetà.wav")
+        elif (Nsong == 4):
+            PlayAudio().play("sounds/tichetà.wav")
+        elif (Nsong == 5):
+            PlayAudio().play("sounds/opopop.wav")
+        elif (Nsong == 6):
+            PlayAudio().play("sounds/opopop.wav")
+        elif (Nsong == 7):
+            PlayAudio().play("sounds/founding.wav")
+            #PlayAudio().play("sounds/44Gatti.wav.wav")
+    elif (level == 2):
+        if (Nsong == 0):
+            PlayAudio().play("sounds/AttentiallaMusica2.wav")
+        elif (Nsong == 1):
+            PlayAudio().play("sounds/Snappy_R2D2.wav")
+        elif (Nsong == 2):
+            PlayAudio().play("sounds/Snappy_R2D2.wav")
+        elif (Nsong == 3):
+            PlayAudio().play("sounds/queen.wav")
+        elif (Nsong == 4):
+            PlayAudio().play("sounds/queen.wav")
+        elif (Nsong == 5):
+            PlayAudio().play("sounds/queen.wav")
+        elif (Nsong == 6):
+            PlayAudio().play("sounds/queen.wav")
+        elif(Nsong == 7):
+            PlayAudio().play("sounds/founding.wav")
+            #PlayAudio().play("sounds/PulcinoBallerino.wav")
+    elif (level == 3):
+        if (Nsong == 0):
+            PlayAudio().play("sounds/AttentiallaMusica3.wav")
+        elif (Nsong == 1):
+            PlayAudio().play("sounds/GiroGiroTondo1.wav")
+        elif (Nsong == 2):
+            PlayAudio().play("sounds/GiroGiroTondo2.wav")
+        elif (Nsong == 3):
+            PlayAudio().play("sounds/Snappy_R2D2.wav")
+        elif (Nsong == 4):
+            PlayAudio().play("sounds/Snappy_R2D2.wav")
+        elif (Nsong == 5):
+            PlayAudio().play("sounds/Snappy_R2D2.wav")
+        elif (Nsong == 6):
+            PlayAudio().play("sounds/Snappy_R2D2.wav")
+        elif (Nsong == 7):
+            PlayAudio().play("sounds/founding.wav")
+            #PlayAudio().play("sounds/TartarugaSprint.wav")
     

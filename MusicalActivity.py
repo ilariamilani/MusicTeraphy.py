@@ -100,8 +100,7 @@ if __name__ == '__main__':
     ActivityLevel = 1
     while ActivityLevel < 4:
         song = 0
-        reproduce_song(ActivityLevel, song) #Attenti alla musica!
-        #ActivityLevel += 1
+        #reproduce_song(ActivityLevel, song) #Attenti alla musica!
         NSongIdentified = 0
         while song < NSongsinLevel:
             song += 1
@@ -118,14 +117,13 @@ if __name__ == '__main__':
             if song == 1:
                 reproduce_song(MA_interactionLevel, 4) #tocca a te!
 
-
+            # BEAT RECOGNITION
             activity = AudioActivity()
             activity.start(id=Nid)
             print("id=")
             print(Nid)
             if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
                 Nid += 1
-
             while activity.elapsed_time < answerTime or activity.silence < 40: #definesongtime #wait in case the child is still playing
                 time.sleep(1.0)
                 if activity.sequence_identified > 0:
@@ -138,16 +136,15 @@ if __name__ == '__main__':
                     #print("Niente")
             while activity.silence < 15:  #wait in case the child is still playing
                 continue
-
             activity.stop()
             if ( ((song % 2) == 0) and (NSongIdentified > 0)): #at least 1 song over 2 has been correctly reproduced
                 reproduce_song(MA_interactionLevel, 2) #wow evviva!
             print(".")
             print("next song in the same level")
             print(".")
-
+        # LEVEL CONCLUDED: checking for results. if 50% of the activity is correct: next level. else: repeat the level
         if (song == NSongsinLevel): #end of the level
-            if NSongIdentified >= 3: #50% correct ((NSongsinLevel - 1) / 2)
+            if NSongIdentified >= ((NSongsinLevel - 1) // 2): #50% correct
                 print(".")
                 print("yeeeeeeeeeeeeeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy ready fot the next level")
                 print(".")
@@ -162,7 +159,7 @@ if __name__ == '__main__':
                 # if the child was not able to pass to the next level, the same will be reproposed
                 Nid -= ((NSongsinLevel - 1) // 2)
         song += 1
-        reproduce_song(ActivityLevel, song)
+        reproduce_song(ActivityLevel, song) #Z???????????????????????????????????????????????????????????????????????????????
 
 
 ##aggiungi anche luci e movimenti alle espressioni
