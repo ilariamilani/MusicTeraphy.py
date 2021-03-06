@@ -100,7 +100,7 @@ if __name__ == '__main__':
     ActivityLevel = 1
     while ActivityLevel < 4:
         song = 0
-        #reproduce_song(ActivityLevel, song) #Attenti alla musica!
+        reproduce_song(ActivityLevel, song) #Attenti alla musica!
         NSongIdentified = 0
         while song < NSongsinLevel:
             song += 1
@@ -109,8 +109,6 @@ if __name__ == '__main__':
                 break
             if (((song % 2) != 0) and (song != NSongsinLevel)): #every time a new song is played (odd number)(every song is reproduced twice)
                 reproduce_song(MA_interactionLevel, 0) #suona con me!
-            if song == NSongsinLevel:
-                reproduce_song(MA_interactionLevel, 6)  # canta con me!
             if song == 2:
                 reproduce_song(MA_interactionLevel, 5)  # ora tocca a me!
             reproduce_song(ActivityLevel, song)
@@ -149,7 +147,8 @@ if __name__ == '__main__':
                 print("yeeeeeeeeeeeeeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy ready fot the next level")
                 print(".")
                 reproduce_song(MA_interactionLevel, 1)  # wow, bravo! reproduced when the level has been passed
-                reproduce_song(ActivityLevel, song)
+                reproduce_song(MA_interactionLevel, 6)  # canta con me!
+                reproduce_song(ActivityLevel, song) # long song
                 ActivityLevel += 1
             else:
                 print(".")
@@ -158,8 +157,8 @@ if __name__ == '__main__':
                 reproduce_song(MA_interactionLevel, 3)  # riproviamo
                 # if the child was not able to pass to the next level, the same will be reproposed
                 Nid -= ((NSongsinLevel - 1) // 2)
-        song += 1
-        reproduce_song(ActivityLevel, song) #Z???????????????????????????????????????????????????????????????????????????????
+        #song += 1 #??????????????????????
+        #reproduce_song(ActivityLevel, song)
 
 
 ##aggiungi anche luci e movimenti alle espressioni
