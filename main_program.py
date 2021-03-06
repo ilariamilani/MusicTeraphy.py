@@ -328,6 +328,10 @@ with suppress_stdout_stderr():
                             functions_main.reproduce_song(MA_interactionLevel, 2)  # wow evviva!
                             functions_main.send_uno_lights(arduino.ser1, "happy")
                             functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
+                        elif activity.other_activity > 20: #if the child did not correctly reproduced any song and he is distracted
+                            print("the child is not performing the activity")
+                            functions_main.send_uno_lights(arduino.ser1, "sad")
+                            functions_main.reproduce_action_sound("sad")
                         print(".")
                         print("next song in the same level")
                         print(".")

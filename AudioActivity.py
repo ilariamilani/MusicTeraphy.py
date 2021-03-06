@@ -26,6 +26,7 @@ class AudioActivity:
         self.Nbeat = 0
         self.silence = 0
         self.elapsed_time = 0
+        self.other_activity = 0
         self.p = None
         self.stream = None
 
@@ -133,6 +134,7 @@ class AudioActivity:
                     self.Nbeat += 1
                     self.silence = 0
                 if self.silence == 0 and self.noise >= 10:
+                    self.other_activity += 1
                     print("other activity is detected")
         elif decibel < LOW_THRESHOLD:
             self.silence += 1

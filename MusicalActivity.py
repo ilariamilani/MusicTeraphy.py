@@ -122,7 +122,7 @@ if __name__ == '__main__':
             print(Nid)
             if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
                 Nid += 1
-            while activity.elapsed_time < answerTime or activity.silence < 40: #definesongtime #wait in case the child is still playing
+            while activity.elapsed_time < answerTime or activity.silence < 30: #wait in case the child is still playing
                 time.sleep(1.0)
                 if activity.sequence_identified > 0:
                     print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
@@ -137,6 +137,8 @@ if __name__ == '__main__':
             activity.stop()
             if ( ((song % 2) == 0) and (NSongIdentified > 0)): #at least 1 song over 2 has been correctly reproduced
                 reproduce_song(MA_interactionLevel, 2) #wow evviva!
+            elif activity.other_activity > 20:
+                print("the child is not performing the activity")
             print(".")
             print("next song in the same level")
             print(".")
