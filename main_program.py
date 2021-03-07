@@ -4,8 +4,6 @@ import argparse
 import sys
 import os
 import time
-import numpy as np
-import math
 import subprocess
 from datetime import datetime
 from AudioActivity import AudioActivity
@@ -159,6 +157,8 @@ with suppress_stdout_stderr():
         NSongsinLevel = 7  # number of songs in a level
         MA_interactionLevel = 0  # contains the audios for interaction in MA
         start_acquisition = 0
+        answerTime = 10.0 # minimum time given to reproduce a song
+        TIME_OUT_song = 15.0 # maximum time given to reproduce a song
 
 
         #--> Counting the time that manages the reseach of a human
@@ -287,7 +287,6 @@ with suppress_stdout_stderr():
                 start_time_MA = time.time()
                 print("Musical Activity")
                 Nid = 0
-                answerTime = 8.0
                 ActivityLevel = 1
                 while ActivityLevel < 4:
                     song = 0
@@ -312,23 +311,23 @@ with suppress_stdout_stderr():
                         print(Nid)
                         if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
                             Nid += 1
-                        while activity.elapsed_time < answerTime or activity.silence < 40:  # definesongtime #wait in case the child is still playing
+                        while ((activity.elapsed_time < answerTime or activity.silence < 30) and activity.elapsed_time < TIME_OUT_song): #wait in case the child is still playing (making noises)
                             time.sleep(1.0)
                             if activity.sequence_identified > 0:
                                 print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
                                 functions_main.send_uno_lights(arduino.ser1, "happy")
                                 NSongIdentified += 1
                                 activity.sequence_identified = 0
-                                time.sleep(1.5)
+                                time.sleep(2.0)
                                 break
-                        while activity.silence < 15:  # wait in case the child is still playing
+                        while activity.silence < 15 and activity.elapsed_time < TIME_OUT_song:  # wait in case the child is still playing
                             continue
                         activity.stop()
                         if (((song % 2) == 0) and (NSongIdentified > 0)):  # at least 1 song over 2 has been correctly reproduced
                             functions_main.reproduce_song(MA_interactionLevel, 2)  # wow evviva!
                             functions_main.send_uno_lights(arduino.ser1, "happy")
                             functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
-                        elif activity.other_activity > 20: #if the child did not correctly reproduced any song and he is distracted
+                        elif activity.other_activity > 20: # if the child did not correctly reproduced any song and he is distracted
                             print("the child is not performing the activity")
                             functions_main.send_uno_lights(arduino.ser1, "sad")
                             functions_main.reproduce_action_sound("sad")

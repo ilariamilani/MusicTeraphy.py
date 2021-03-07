@@ -32,9 +32,9 @@ def reproduce_song(level, Nsong):
         if (Nsong == 0):
             PlayAudio().play("sounds/AttentiallaMusica1.wav")
         elif (Nsong == 1):
-            PlayAudio().play("sounds/tatittitata.wav")
+            PlayAudio().play("sounds/dindondan.wav")
         elif (Nsong == 2):
-            PlayAudio().play("sounds/tatittitata.wav")
+            PlayAudio().play("sounds/dindondan.wav")
         elif (Nsong == 3):
             PlayAudio().play("sounds/tichetà.wav")
         elif (Nsong == 4):
@@ -50,17 +50,17 @@ def reproduce_song(level, Nsong):
         if (Nsong == 0):
             PlayAudio().play("sounds/AttentiallaMusica2.wav")
         elif (Nsong == 1):
-            PlayAudio().play("sounds/Snappy_R2D2.wav")
+            PlayAudio().play("sounds/TwinkleTwinkleLittleStar.wav")
         elif (Nsong == 2):
-            PlayAudio().play("sounds/Snappy_R2D2.wav")
+            PlayAudio().play("sounds/TwinkleTwinkleLittleStar.wav")
         elif (Nsong == 3):
             PlayAudio().play("sounds/queen.wav")
         elif (Nsong == 4):
             PlayAudio().play("sounds/queen.wav")
         elif (Nsong == 5):
-            PlayAudio().play("sounds/queen.wav")
+            PlayAudio().play("sounds/BrillaBrillaStellina.wav")
         elif (Nsong == 6):
-            PlayAudio().play("sounds/queen.wav")
+            PlayAudio().play("sounds/BrillaBrillaStellina.wav")
         elif(Nsong == 7):
             PlayAudio().play("sounds/founding.wav")
             #PlayAudio().play("sounds/PulcinoBallerino.waw")
@@ -72,13 +72,13 @@ def reproduce_song(level, Nsong):
         elif (Nsong == 2):
             PlayAudio().play("sounds/GiroGiroTondo2.wav")
         elif (Nsong == 3):
-            PlayAudio().play("sounds/Snappy_R2D2.wav")
+            PlayAudio().play("sounds/fraMartino.wav")
         elif (Nsong == 4):
-            PlayAudio().play("sounds/Snappy_R2D2.wav")
+            PlayAudio().play("sounds/SuonaLeCampane.wav")
         elif (Nsong == 5):
-            PlayAudio().play("sounds/Snappy_R2D2.wav")
+            PlayAudio().play("sounds/vecchiaFattoria1.wav")
         elif (Nsong == 6):
-            PlayAudio().play("sounds/Snappy_R2D2.wav")
+            PlayAudio().play("sounds/vecchiaFattoria2.wav")
         elif (Nsong == 7):
             PlayAudio().play("sounds/founding.wav")
             #PlayAudio().play("sounds/TartarugaSprint.waw")
@@ -97,6 +97,7 @@ if __name__ == '__main__':
 
     Nid = 0
     answerTime = 8.0
+    TIME_OUT_song = 15.0  # maximum time given to reproduce a song
     ActivityLevel = 1
     while ActivityLevel < 4:
         song = 0
@@ -122,17 +123,17 @@ if __name__ == '__main__':
             print(Nid)
             if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
                 Nid += 1
-            while activity.elapsed_time < answerTime or activity.silence < 30: #wait in case the child is still playing
+            while ((activity.elapsed_time < answerTime or activity.silence < 30) and activity.elapsed_time < TIME_OUT_song): #wait in case the child is still playing (making noises)
                 time.sleep(1.0)
                 if activity.sequence_identified > 0:
                     print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
                     NSongIdentified += 1
                     activity.sequence_identified = 0
-                    time.sleep(1.5)
+                    time.sleep(2.0)
                     break
                 #else:
                     #print("Niente")
-            while activity.silence < 15:  #wait in case the child is still playing
+            while activity.silence < 15 and activity.elapsed_time < TIME_OUT_song:  #wait in case the child is still playing
                 continue
             activity.stop()
             if ( ((song % 2) == 0) and (NSongIdentified > 0)): #at least 1 song over 2 has been correctly reproduced

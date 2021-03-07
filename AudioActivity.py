@@ -32,26 +32,21 @@ class AudioActivity:
 
 
     def initialize_sequences(self):
-        self.sequence.append([1./4, 1./8, 1./8, 1./4, 1./4])  #tatititata                             0
-        self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4])  # ticchetà                        1
-        self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4])  # opopop                          2
-        self.sequence.append([1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./4]) #giro giro tondo       3
-        self.sequence.append([1./4, 1./4, 1./4, 1./8, 1./8, 1./4, 1./4]) #queen                       4
-        self.sequence.append([1./4, 1./4, 1./4, 1./8, 1./8, 1./4, 1./4]) #queen                       5
-        self.sequence.append([1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./4]) #fra martino           6
-        self.sequence.append([1./4, 1./4, 2./4, 1./4, 1./4, 2./4]) #fra martino 2 & din don dan       7
-        self.sequence.append([1./4, 1./4, 1./4, 2./4, 1./4, 1./4, 1./4, 2./4]) #giro giro tondo       8
-        self.sequence.append([1./4, 1./4, 1./4, 1./4]) #giro giro tondo                               9
-        self.sequence.append([1./5, 1./5, 1./5, 1./5])  # giro giro tondo short                       10
-        self.sequence.append([1./6, 1./6, 1./6, 1./6]) #giro giro tondo short                         11
-        self.sequence.append([1./7, 1./7, 1./7, 1./7])  # giro giro tondo short                       12
-        self.sequence.append([1./8, 1./8, 1./8, 1./8])  # giro giro tondo short                       13
+        self.sequence.append([1./4, 1./4, 1./2, 1./4, 1./4, 1./2])  # dindondan                           0
+        self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4])  # ticchetà                            1
+        self.sequence.append([1./8, 1./8, 1./4, 1./8, 1./8, 1./4])  # opopop                              2
+        self.sequence.append([1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./2]) #twinkle twinkle                 3
+        self.sequence.append([1./4, 1./4, 1./2, 1./8, 1./8, 1./4, 1./4]) #queen                           4
+        self.sequence.append([1./8, 1./6, 1./8, 1./6, 1./8, 1./6, 1./4]) # brilla brilla stellina         5
+        self.sequence.append([1./6, 1./6, 1./6, 1./6, 1./6, 1./6, 1./6, 1./6]) #giro giro tondo           6
+        #self.sequence.append([1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./4]) #giro giro tondo
+        self.sequence.append([1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./2, 1./4, 1./4, 1./2]) #fra martino   7
+        self.sequence.append([1./4, 1./4, 1./4, 1./4, 1./4, 1./4, 1./4]) #vecchia fattoria                8
 
 
 
-        self.sequence.append([1./7, 1./7, 1./7, 1./7])  # giro giro tondo short                       11
-        self.sequence.append([1./6, 1./6, 1./6, 1./4, 1./6, 1./6])  # opopop                          12
-        self.sequence.append([1./4, 1./8, 1./8, 1./4])  # tatititata                                  13
+        self.sequence.append([1./6, 1./6, 1./4, 1./6, 1./6, 1./6]) # ci vuole un fiore                    9
+        self.sequence.append([1./4, 1./8, 1./8, 1./4, 1./4])  #tatititata                                 10
         # fra martino, bella lavanderina?
 
 

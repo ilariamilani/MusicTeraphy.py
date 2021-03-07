@@ -18,85 +18,86 @@ if __name__ == '__main__':
 
     answerTime = 8.0
     NSongIdentified = 0
+    TIME_OUT_song = 15.0  # maximum time given to reproduce a song
 
 
-
+    PlayAudio().play("sounds/BrillaBrillaStellina.wav")
     activity = AudioActivity()
     activity.sequence_identified = 0
-    activity.start(id=6)
-    while activity.elapsed_time < answerTime or activity.silence < 40:  # definesongtime #wait in case the child is still playing
+    activity.start(id=5)
+    while ((activity.elapsed_time < answerTime or activity.silence < 30) and activity.elapsed_time < TIME_OUT_song):  # definesongtime #wait in case the child is still playing
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo 1")
             NSongIdentified += 1
             activity.sequence_identified = 0
             break
-        # else:
-        # print("Niente")
-    while activity.silence < 15:  # wait in case the child is still playing
+    while activity.silence < 15 and activity.elapsed_time < TIME_OUT_song:  # wait in case the child is still playing
         continue
     activity.stop()
 
+    print("next")
+
+    PlayAudio().play("bravo.wav")
     activity = AudioActivity()
     NSongIdentified = 0
-    activity.start(id=7)
-    activity.sequence_identified = 0
-    while activity.elapsed_time < (answerTime * 2) or activity.silence < 40:  # definesongtime #wait in case the child is still playing
+    activity.start(id=5)
+    while ((activity.elapsed_time < answerTime or activity.silence < 30) and activity.elapsed_time < TIME_OUT_song):  # definesongtime #wait in case the child is still playing
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo 2")
             NSongIdentified += 1
             activity.sequence_identified = 0
             break
-        # else:
-        # print("Niente")
-    while activity.silence < 15:  # wait in case the child is still playing
+    while activity.silence < 15 and activity.elapsed_time < TIME_OUT_song:  # wait in case the child is still playing
         continue
     activity.stop()
-    if NSongIdentified == 2:
-        print("giro giro tondo identified!!!")
 
+    print("next")
 
+    PlayAudio().play("bravo.wav")
     activity = AudioActivity()
     NSongIdentified = 0
-    PlayAudio().play("bravo.wav")
-    activity.start(id=0)
-    song_time = 4 # durata song
-    while activity.elapsed_time < song_time + 2 or activity.silence < 40:
+    activity.start(id=5)
+    while ((activity.elapsed_time < answerTime or activity.silence < 30) and activity.elapsed_time < TIME_OUT_song):
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
             NSongIdentified += 1
             activity.sequence_identified = 0
-            #activity.p = None
-            #activity.stream = None
             break
-        else:
-            print("Niente")
-    while activity.silence < 15: #da mettere in and nel while se funz come or silence < 45
+    while activity.silence < 15 and activity.elapsed_time < TIME_OUT_song: #da mettere in and nel while se funz come or silence < 45
         continue
     activity.stop()
 
+    print("next")
+
+    PlayAudio().play("bravo.wav")
     activity = AudioActivity()
     NSongIdentified = 0
-    PlayAudio().play("bravo.wav")
-    activity.start(id=1)
-    song_time = 4  # durata song
-    while activity.elapsed_time < song_time + 2 or activity.silence < 40:
+    activity.start(id=10)
+    while ((activity.elapsed_time < answerTime or activity.silence < 30) and activity.elapsed_time < TIME_OUT_song):
         time.sleep(1.0)
         if activity.sequence_identified > 0:
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
             NSongIdentified += 1
             activity.sequence_identified = 0
-            # activity.p = None
-            # activity.stream = None
             break
-        else:
-            print("Niente")
-    while activity.silence < 15:  # da mettere in and nel while se funz come or silence < 45
+    while activity.silence < 15 and activity.elapsed_time < TIME_OUT_song:  # da mettere in and nel while se funz come or silence < 45
         continue
     activity.stop()
+    PlayAudio().play("sounds/GiroGiroTondo1.wav")
 
+
+
+
+    print("next")
+
+
+
+
+
+    PlayAudio().play("bravo.wav")
     activity = AudioActivity()
     NSongIdentified = 0
     activity.start(id=3)
@@ -107,11 +108,7 @@ if __name__ == '__main__':
             print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
             NSongIdentified += 1
             activity.sequence_identified = 0
-            # activity.p = None
-            # activity.stream = None
             break
-        else:
-            print("Niente")
     while activity.silence < 15:  # da mettere in and nel while se funz come or silence < 45
         continue
 
