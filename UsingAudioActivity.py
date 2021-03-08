@@ -58,7 +58,7 @@ if __name__ == '__main__':
     PlayAudio().play("bravo.wav")
     activity = AudioActivity()
     NSongIdentified = 0
-    activity.start(id=5)
+    activity.start(id=4)
     while ((activity.elapsed_time < answerTime or activity.silence < 30) and activity.elapsed_time < TIME_OUT_song):
         time.sleep(1.0)
         if activity.sequence_identified > 0:
@@ -75,7 +75,7 @@ if __name__ == '__main__':
     PlayAudio().play("bravo.wav")
     activity = AudioActivity()
     NSongIdentified = 0
-    activity.start(id=10)
+    activity.start(id=4)
     while ((activity.elapsed_time < answerTime or activity.silence < 30) and activity.elapsed_time < TIME_OUT_song):
         time.sleep(1.0)
         if activity.sequence_identified > 0:

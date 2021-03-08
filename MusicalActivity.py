@@ -138,7 +138,7 @@ if __name__ == '__main__':
             activity.stop()
             if ( ((song % 2) == 0) and (NSongIdentified > 0)): #at least 1 song over 2 has been correctly reproduced
                 reproduce_song(MA_interactionLevel, 2) #wow evviva!
-            elif activity.other_activity > 20:
+            elif activity.other_activity > 20 or activity.Nbeat < 3:
                 print("the child is not performing the activity")
             print(".")
             print("next song in the same level")

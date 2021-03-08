@@ -7,6 +7,7 @@ import time
 import subprocess
 from datetime import datetime
 from AudioActivity import AudioActivity
+from audioplayer import PlayAudio
 from pynput import keyboard
 import functions_main
 import connections_arduinos as arduino #new_user_fun
@@ -155,9 +156,9 @@ with suppress_stdout_stderr():
         waitingForSounds = 0
         NSongsinLevel = 7  # number of songs in a level
         MA_interactionLevel = 0  # contains the audios for interaction in MA
-        start_acquisition = 0
         answerTime = 10.0 # minimum time given to reproduce a song
         TIME_OUT_song = 15.0 # maximum time given to reproduce a song
+        angle_acquisition = 0
 
 
         #--> Counting the time that manages the reseach of a human
@@ -176,19 +177,19 @@ with suppress_stdout_stderr():
         actual_time_MA = 0
 
 
-
         while True:
 
             t1 = time.perf_counter()
 
             arduino.new_user_function() #Connect with the Mega and obtain data from sensors
 
-            # Run Voice Detection
-            for x in range(3):
+            # Run Object Detection
+            angle_acquisition = 0
+            while angle_acquisition < 3:
+                angle_acquisition += 1
                 echo = 0
                 prevpreviousAngle = previousAngle
                 previousAngle = angle
-                prevMeanAngle = meanAngle
                 #ANGLE from BlueCoin
                 subprocess2 = subprocess.Popen("/home/pi/BlueCoin/BlueCoin", shell=True, stdout=subprocess.PIPE)
                 subprocess_return = subprocess2.stdout.read()
@@ -202,73 +203,74 @@ with suppress_stdout_stderr():
                 angle = int(stringangle)
                 print("angle from BlueCoin=  {:.1f}".format(angle) )
 
-                # check for voice's direction and echo
-                if angle < 0 and (previousAngle >= 0 or prevpreviousAngle >= 0):
-                    if previousAngle >= 0 and prevpreviousAngle >= 0:
-                        if abs(previousAngle - prevpreviousAngle) < 100:
-                            meanAngle = (previousAngle + prevpreviousAngle) // 2
-                        elif ((previousAngle <= 45) and (previousAngle >= 315) and (prevpreviousAngle <= 45) and (prevpreviousAngle >= 315)): #if back
-                            meanAngle = 1 #random number on the back
-                        else:
-                            echo = 1
-                            soundDirection = "ECHO"
-                            meanAngle = -100
-                            print("echo present")
-                    elif previousAngle >= 0 and prevpreviousAngle < 0:
-                        meanAngle = previousAngle
-                    elif previousAngle < 0 and prevpreviousAngle >= 0:
-                        meanAngle = prevpreviousAngle
-                elif angle >= 0:
-                    if previousAngle >= 0 and prevpreviousAngle >= 0:
-                        if (abs(previousAngle - prevpreviousAngle) + abs(angle - prevpreviousAngle) + abs(previousAngle - angle)) < 200:
-                            meanAngle = (angle + previousAngle + prevpreviousAngle) // 3
-                        elif ((angle <= 45) and (angle >= 315) and (previousAngle <= 45) and (previousAngle >= 315) and  (prevpreviousAngle <= 45) and (prevpreviousAngle >= 315)): #if back
-                            meanAngle = 1 #random number on the back
-                        else:
-                            echo = 1
-                            soundDirection = "ECHO"
-                            meanAngle = -100
-                            print("echo present")
-                    elif previousAngle >= 0 and prevpreviousAngle < 0:
-                        if abs(previousAngle - angle) < 100:
-                            meanAngle = (previousAngle + angle) // 2
-                        elif ((previousAngle <= 45) and (previousAngle >= 315) and  (angle <= 45) and (angle >= 315)): #if back
-                            meanAngle = 1 #random number on the back
-                        else:
-                            echo = 1
-                            soundDirection = "ECHO"
-                            meanAngle = -100
-                            print("echo present")
-                    elif previousAngle < 0 and prevpreviousAngle >= 0:
-                        if abs(angle - prevpreviousAngle ) < 100:
-                            meanAngle = (angle + prevpreviousAngle) // 2
-                        elif ((prevpreviousAngle <= 45) and (prevpreviousAngle >= 315) and  (angle <= 45) and (angle >= 315)): #if back
-                            meanAngle = 1 #random number on the back
-                        else:
-                            echo = 1
-                            soundDirection = "ECHO"
-                            meanAngle = -100
-                            print("echo present")
-                    elif previousAngle < 0 and prevpreviousAngle < 0:
-                        meanAngle = angle
-                else:
-                    meanAngle = -100
-                    soundDirection = "NONE"
-                    print("no voice detected")
-                print("meanAngle: {:.1f}".format(meanAngle))
+            # check for voice's direction and echo
+            prevMeanAngle = meanAngle
+            if angle < 0 and (previousAngle >= 0 or prevpreviousAngle >= 0):
+                if previousAngle >= 0 and prevpreviousAngle >= 0:
+                    if abs(previousAngle - prevpreviousAngle) < 100:
+                        meanAngle = (previousAngle + prevpreviousAngle) // 2
+                    elif ((previousAngle <= 45) and (previousAngle >= 315) and (prevpreviousAngle <= 45) and (prevpreviousAngle >= 315)): #if back
+                        meanAngle = 1 #random number on the back
+                    else:
+                        echo = 1
+                        soundDirection = "ECHO"
+                        meanAngle = -100
+                        print("echo present")
+                elif previousAngle >= 0 and prevpreviousAngle < 0:
+                    meanAngle = previousAngle
+                elif previousAngle < 0 and prevpreviousAngle >= 0:
+                    meanAngle = prevpreviousAngle
+            elif angle >= 0:
+                if previousAngle >= 0 and prevpreviousAngle >= 0:
+                    if (abs(previousAngle - prevpreviousAngle) + abs(angle - prevpreviousAngle) + abs(previousAngle - angle)) < 200:
+                        meanAngle = (angle + previousAngle + prevpreviousAngle) // 3
+                    elif ((angle <= 45) and (angle >= 315) and (previousAngle <= 45) and (previousAngle >= 315) and  (prevpreviousAngle <= 45) and (prevpreviousAngle >= 315)): #if back
+                        meanAngle = 1 #random number on the back
+                    else:
+                        echo = 1
+                        soundDirection = "ECHO"
+                        meanAngle = -100
+                        print("echo present")
+                elif previousAngle >= 0 and prevpreviousAngle < 0:
+                    if abs(previousAngle - angle) < 100:
+                        meanAngle = (previousAngle + angle) // 2
+                    elif ((previousAngle <= 45) and (previousAngle >= 315) and  (angle <= 45) and (angle >= 315)): #if back
+                        meanAngle = 1 #random number on the back
+                    else:
+                        echo = 1
+                        soundDirection = "ECHO"
+                        meanAngle = -100
+                        print("echo present")
+                elif previousAngle < 0 and prevpreviousAngle >= 0:
+                    if abs(angle - prevpreviousAngle ) < 100:
+                        meanAngle = (angle + prevpreviousAngle) // 2
+                    elif ((prevpreviousAngle <= 45) and (prevpreviousAngle >= 315) and  (angle <= 45) and (angle >= 315)): #if back
+                        meanAngle = 1 #random number on the back
+                    else:
+                        echo = 1
+                        soundDirection = "ECHO"
+                        meanAngle = -100
+                        print("echo present")
+                elif previousAngle < 0 and prevpreviousAngle < 0:
+                    meanAngle = angle
+            else:
+                meanAngle = -100
+                soundDirection = "NONE"
+                print("no voice detected")
+            print("meanAngle: {:.1f}".format(meanAngle))
 
-                if ((echo == 0) and (meanAngle >= 0)):
-                   if ((meanAngle >= 155 ) and (meanAngle <= 205)): # sounds from the front
-                       soundDirection = "FRONT"
-                   elif ((meanAngle <= 205) and (meanAngle >= 315)): # sounds from the right
-                       soundDirection = "RIGHT"
-                   elif ((meanAngle >= 45) and (meanAngle <= 155)): # sounds from the left
-                       soundDirection = "LEFT"
-                   elif (((meanAngle >= 315) and (meanAngle <= 45))): # sounds from the back
-                       soundDirection = "BACK"
+            if ((echo == 0) and (meanAngle >= 0)):
+               if ((meanAngle >= 155 ) and (meanAngle <= 205)): # sounds from the front
+                   soundDirection = "FRONT"
+               elif ((meanAngle <= 205) and (meanAngle >= 315)): # sounds from the right
+                   soundDirection = "RIGHT"
+               elif ((meanAngle >= 45) and (meanAngle <= 155)): # sounds from the left
+                   soundDirection = "LEFT"
+               elif (((meanAngle >= 315) and (meanAngle <= 45))): # sounds from the back
+                   soundDirection = "BACK"
 
-                if ((echo == 1) or (meanAngle >= 0)):
-                    waitingForSounds = 0
+            if ((echo == 1) or (meanAngle >= 0)):
+                waitingForSounds = 0
 
             ####-----START HUMAN INTERACTION-----####
             count = 0
@@ -315,7 +317,7 @@ with suppress_stdout_stderr():
                                 functions_main.send_uno_lights(arduino.ser1, "happy")
                                 NSongIdentified += 1
                                 activity.sequence_identified = 0
-                                time.sleep(2.0)
+                                time.sleep(1.0)
                                 break
                         while activity.silence < 15 and activity.elapsed_time < TIME_OUT_song:  # wait in case the child is still playing
                             continue
@@ -372,10 +374,8 @@ with suppress_stdout_stderr():
                 duration_MA = 0
                 NSongIdentified = 0
 
-            #at the beginning of the program, before starting to find the user, I need to acquire at least 4 data from the directional microphone
-            if start_acquisition < 3:
-                start_acquisition += 1
-            elif interaction != 2 and not MusicalActivity: #If I'm not interacting with the human
+
+            if interaction != 2 and not MusicalActivity: #If I'm not interacting with the human
                 print("Interaction != 2, I'm not interacting with the human")
                 if arduino.old_user != "none": #if an object is detected by the sonar, check if it is a human
                     print("Object detected by sonars")
