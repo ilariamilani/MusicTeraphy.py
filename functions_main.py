@@ -1,4 +1,5 @@
 import serial
+import random
 from subprocess import run
 from audioplayer import PlayAudio
 
@@ -6,17 +7,18 @@ previous_action = "none"
 next_action = "none"
 state_user = ""
 current_action = "none"
+audio_list = ['CantaConMe', 'SuonaConMe', 'wow', 'Evviva', 'CheBravo']
 
 
 def human_verification(angle_mean, user, count): #return if the object detected by sonar is a human
     #print("angle: " + str(angle_mean)+", User:" + user)
-    if (( user== "front") and ((angle_mean >= 155 ) and (angle_mean <= 205)) and (count >= 2)): # 180+-45
+    if (( user== "front") and ((angle_mean >= 165 ) and (angle_mean <= 195)) and (count >= 2)): # 180+-30
         print("Human front")
         tracking_a_user = True
-    elif (( user== "right") and (angle_mean <= 205) and (angle_mean >= 315)  and (count >= 2)): # 90+-45
+    elif (( user== "right") and (angle_mean <= 195) and (angle_mean >= 315)  and (count >= 2)): # 90+-
         print("human right")
         tracking_a_user = True
-    elif ((user == "left") and (angle_mean >= 45) and (angle_mean <= 155) and (count >= 2)): # 270+-45
+    elif ((user == "left") and (angle_mean >= 45) and (angle_mean <= 165) and (count >= 2)): # 270+-
         print("Human left")
         tracking_a_user = True
     else:
@@ -131,6 +133,12 @@ def reproduce_song(level, Nsong):
             PlayAudio().play("sounds/OraToccaAMe.wav")
         elif (Nsong == 6):
             PlayAudio().play("sounds/CantaConMe.wav")
+        elif (Nsong == 7):
+            PlayAudio().play("sounds/Sad_R2D2.wav")
+        elif (Nsong == 8):
+            # pick a random choice from a list of strings.
+            audio = random.choice(audio_list)
+            PlayAudio().play("sounds/audio.wav")
     if (level == 1):
         if (Nsong == 0):
             PlayAudio().play("sounds/AttentiallaMusica1.wav")

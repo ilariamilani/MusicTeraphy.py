@@ -1,6 +1,7 @@
 from AudioActivity import AudioActivity
 import time
 import os
+import random
 from subprocess import run
 from audioplayer import PlayAudio
 
@@ -8,6 +9,9 @@ from audioplayer import PlayAudio
 #print(os.path.abspath(__file__))
 #print(os.path.dirname(os.path.abspath(__file__)))
 #os.chdir(os.path.dirname(os.path.abspath(__file__)))  # change working directory
+
+#audio_list = ['CantaConMe', 'SuonaConMe', 'wow', 'Evviva', 'CheBravo']
+audio_list = ["sounds/Evviva.wav", "sounds/wow.wav", "sounds/SuonaConMe.wav", "sounds/CheBravo.wav"]
 
 #da mettere in funtions_main
 def reproduce_song(level, Nsong):
@@ -30,6 +34,10 @@ def reproduce_song(level, Nsong):
             PlayAudio().play("sounds/CantaConMe.wav")
         elif (Nsong == 7):
             PlayAudio().play("sounds/Sad_R2D2.wav")
+        elif (Nsong == 8):
+            # pick a random choice from a list of strings.
+            audio = random.choice(audio_list)
+            PlayAudio().play(audio)
     if (level == 1):
         if (Nsong == 0):
             PlayAudio().play("sounds/AttentiallaMusica1.wav")
@@ -97,7 +105,8 @@ MA_interactionLevel = 0 #contains the audios for interaction in MA
 
 if __name__ == '__main__':
 
-    Nid = 0
+    reproduce_song(MA_interactionLevel, 8) # random!
+    # Nid = 0
     answerTime = 8.0
     TIME_OUT_song = 12.0  # maximum time given to reproduce a song
     ActivityLevel = 1
@@ -119,11 +128,11 @@ if __name__ == '__main__':
                 break
             if (((song % 2) != 0) and (song != NSongsinLevel)): #every time a new song is played (odd number)(every song is reproduced twice)
                 reproduce_song(MA_interactionLevel, 0) #suona con me!
-            if song == 2:
-                reproduce_song(MA_interactionLevel, 5)  # ora tocca a me!
+            #if song == 2:
+            reproduce_song(MA_interactionLevel, 5)  # ora tocca a me!
             reproduce_song(ActivityLevel, song)
-            if song == 1:
-                reproduce_song(MA_interactionLevel, 4) #tocca a te!
+            #if song == 1:
+            reproduce_song(MA_interactionLevel, 4) #tocca a te!
 
             # BEAT RECOGNITION
             activity = AudioActivity()
@@ -132,7 +141,7 @@ if __name__ == '__main__':
             print(Nid)
             if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
                 Nid += 1
-            while ((activity.elapsed_time < answerTime or activity.silence < 30) and activity.elapsed_time < TIME_OUT_song): #wait in case the child is still playing (making noises)
+            while ((activity.elapsed_time < answerTime or activity.silence < 15) and activity.elapsed_time < TIME_OUT_song): #wait in case the child is still playing (making noises)
                 time.sleep(1.0)
                 if activity.sequence_identified > 0:
                     print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
@@ -143,7 +152,6 @@ if __name__ == '__main__':
             if activity.sequence_identified > 0:
                 while activity.silence < 15 and (identification_time + 1.5 > activity.elapsed_time):  #wait in case the child is still playing
                     continue
-
             activity.stop()
             if ( ((song % 2) == 0) and (NSongIdentified > 0)): #at least 1 song over 2 has been correctly reproduced
                 reproduce_song(MA_interactionLevel, 2) #wow evviva!
@@ -171,8 +179,6 @@ if __name__ == '__main__':
                 reproduce_song(MA_interactionLevel, 3)  # riproviamo
                 # if the child was not able to pass to the next level, the same will be reproposed
                 Nid -= ((NSongsinLevel - 1) // 2)
-        #song += 1 #??????????????????????
-        #reproduce_song(ActivityLevel, song)
 
 
 ##aggiungi anche luci e movimenti alle espressioni

@@ -159,6 +159,7 @@ with suppress_stdout_stderr():
         answerTime = 9.0 # minimum time given to reproduce a song
         TIME_OUT_song = 12.0 # maximum time given to reproduce a song
         angle_acquisition = 0
+        identification_time = 0
 
 
         #--> Counting the time that manages the reseach of a human
@@ -260,11 +261,11 @@ with suppress_stdout_stderr():
             print("meanAngle: {:.1f}".format(meanAngle))
 
             if ((echo == 0) and (meanAngle >= 0)):
-               if ((meanAngle >= 155 ) and (meanAngle <= 205)): # sounds from the front
+               if ((meanAngle >= 165 ) and (meanAngle <= 195)): # sounds from the front
                    soundDirection = "FRONT"
-               elif ((meanAngle <= 205) and (meanAngle >= 315)): # sounds from the right
+               elif ((meanAngle <= 195) and (meanAngle >= 315)): # sounds from the right
                    soundDirection = "RIGHT"
-               elif ((meanAngle >= 45) and (meanAngle <= 155)): # sounds from the left
+               elif ((meanAngle >= 45) and (meanAngle <= 165)): # sounds from the left
                    soundDirection = "LEFT"
                elif (((meanAngle >= 315) and (meanAngle <= 45))): # sounds from the back
                    soundDirection = "BACK"
@@ -281,6 +282,7 @@ with suppress_stdout_stderr():
             #interaction = 2 is when the robot is already interacting with the human
 
             if MusicalActivity:
+                # explaination of the activity
                 time_out_system_hum = 0
                 TOTSongsIdentified = 0
                 start_time_MA = time.time()
@@ -304,11 +306,14 @@ with suppress_stdout_stderr():
                             break
                         if (((song % 2) != 0) and (song != NSongsinLevel)):  # every time a new song is played (odd number)(every song is reproduced twice)
                             functions_main.reproduce_song(MA_interactionLevel, 0)  # suona con me!
-                        if song == 2:
-                            functions_main.reproduce_song(MA_interactionLevel, 5)  # ora tocca a me!
+                            # green lights
+                        #if song == 2:
+                        functions_main.reproduce_song(MA_interactionLevel, 5)  # ora tocca a me!
+                        # red lights
                         functions_main.reproduce_song(ActivityLevel, song)  # reproducing the song
-                        if song == 1:
-                            functions_main.reproduce_song(MA_interactionLevel, 4)  # tocca a te!
+                        #if song == 1:
+                        functions_main.reproduce_song(MA_interactionLevel, 4)  # tocca a te!
+                        # green lights
                         # BEAT RECOGNITION
                         activity = AudioActivity()
                         activity.start(id=Nid)
@@ -316,30 +321,33 @@ with suppress_stdout_stderr():
                         print(Nid)
                         if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
                             Nid += 1
-                        while ((activity.elapsed_time < answerTime or activity.silence < 30) and activity.elapsed_time < TIME_OUT_song): #wait in case the child is still playing (making noises)
+                        while ((activity.elapsed_time < answerTime or activity.silence < 15) and activity.elapsed_time < TIME_OUT_song): #wait in case the child is still playing (making noises)
                             time.sleep(1.0)
                             if activity.sequence_identified > 0:
                                 print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
                                 functions_main.send_uno_lights(arduino.ser1, "happy")
                                 NSongIdentified += 1
-                                activity.sequence_identified = 0
                                 time.sleep(1.0)
+                                identification_time = time.perf_counter()
                                 break
-                        while activity.silence < 15 and activity.elapsed_time < TIME_OUT_song:  # wait in case the child is still playing
-                            continue
+                        if activity.sequence_identified > 0:
+                            while activity.silence < 15 and (identification_time + 1.5 > activity.elapsed_time):  # wait in case the child is still playing
+                                continue
                         activity.stop()
                         #reaction of the robot to the 2 songs just performed
                         if (((song % 2) == 0) and (NSongIdentified > 0)):  # at least 1 song over 2 has been correctly reproduced
                             functions_main.reproduce_song(MA_interactionLevel, 2)  # wow evviva!
                             functions_main.send_uno_lights(arduino.ser1, "happy")
                             functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
-                        elif activity.other_activity > 20: # if the child did not correctly reproduced any song and he is distracted
+                        if (activity.sequence_identified == 0) and (activity.other_activity > 20 or activity.Nbeat < 3):
                             print("the child is not performing the activity")
+                            functions_main.reproduce_song(MA_interactionLevel, 7)  # sad :(
                             functions_main.send_uno_lights(arduino.ser1, "sad")
                             functions_main.reproduce_action_sound("sad")
                         print(".")
                         print("next song in the same level")
                         print(".")
+                        activity.sequence_identified = 0
                     # LEVEL CONCLUDED: checking for results. if 50% of the activity is correct: next level. else: repeat the level
                     if (song == NSongsinLevel):  # end of the level
                         if NSongIdentified >= ((NSongsinLevel - 1) // 2):  # 50% correct
@@ -349,8 +357,8 @@ with suppress_stdout_stderr():
                             functions_main.reproduce_song(MA_interactionLevel, 1)  # wow, bravo! reproduced when the level has been passed
                             functions_main.send_uno_lights(arduino.ser1, "happy")
                             functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
-                            functions_main.reproduce_song(MA_interactionLevel, 6)
-                            functions_main.send_uno_lights(arduino.ser1, "happy")# canta con me!
+                            functions_main.reproduce_song(MA_interactionLevel, 6) # canta con me!
+                            functions_main.send_uno_lights(arduino.ser1, "happy")
                             functions_main.reproduce_song(ActivityLevel, song) # long song
                             ActivityLevel += 1  # next level
                         else:
@@ -368,6 +376,10 @@ with suppress_stdout_stderr():
                     duration_MA = duration_MA + (actual_time_MA - start_time_MA)
                     start_time_MA = actual_time_MA
                     print("Time MA: {:.1f}".format(duration_MA))  # the duration of each level of the activity
+
+                functions_main.send_uno_lights(arduino.ser1, "happy")
+                # thank you for playing with me
+                functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
 
                 if duration_MA != 0:
                     now = datetime.now()
