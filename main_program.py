@@ -7,7 +7,6 @@ import time
 import subprocess
 from datetime import datetime
 from AudioActivity import AudioActivity
-from audioplayer import PlayAudio
 from pynput import keyboard
 import functions_main
 import connections_arduinos as arduino #new_user_fun
@@ -177,8 +176,6 @@ with suppress_stdout_stderr():
         actual_time_MA = 0
 
 
-        PlayAudio().play("sounds/Giochiamo.wav")
-        functions_main.send_uno_lights(arduino.ser1,"none")
 
         while True:
 
@@ -186,7 +183,7 @@ with suppress_stdout_stderr():
 
             arduino.new_user_function() #Connect with the Mega and obtain data from sensors
 
-            # Run Object Detection
+            # Run Voice Detection
             for x in range(3):
                 echo = 0
                 prevpreviousAngle = previousAngle
