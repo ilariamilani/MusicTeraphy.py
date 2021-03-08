@@ -28,6 +28,8 @@ def reproduce_song(level, Nsong):
             PlayAudio().play("sounds/OraToccaAMe.wav")
         elif (Nsong == 6):
             PlayAudio().play("sounds/CantaConMe.wav")
+        elif (Nsong == 7):
+            PlayAudio().play("sounds/Sad_R2D2.wav")
     if (level == 1):
         if (Nsong == 0):
             PlayAudio().play("sounds/AttentiallaMusica1.wav")
@@ -97,12 +99,19 @@ if __name__ == '__main__':
 
     Nid = 0
     answerTime = 8.0
-    TIME_OUT_song = 15.0  # maximum time given to reproduce a song
+    TIME_OUT_song = 12.0  # maximum time given to reproduce a song
     ActivityLevel = 1
+    identification_time = 0
     while ActivityLevel < 4:
         song = 0
         reproduce_song(ActivityLevel, song) #Attenti alla musica!
         NSongIdentified = 0
+        if ActivityLevel == 1:
+            answerTime -= 3.0
+            TIME_OUT_song -= 3.0
+        else:
+            answerTime = 9.0
+            TIME_OUT_song = 12.0
         while song < NSongsinLevel:
             song += 1
             if song == NSongsinLevel:
@@ -128,21 +137,23 @@ if __name__ == '__main__':
                 if activity.sequence_identified > 0:
                     print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
                     NSongIdentified += 1
-                    activity.sequence_identified = 0
-                    time.sleep(2.0)
+                    time.sleep(1.5)
+                    identification_time = time.perf_counter()
                     break
-                #else:
-                    #print("Niente")
-            while activity.silence < 15 and activity.elapsed_time < TIME_OUT_song:  #wait in case the child is still playing
-                continue
+            if activity.sequence_identified > 0:
+                while activity.silence < 15 and (identification_time + 1.5 > activity.elapsed_time):  #wait in case the child is still playing
+                    continue
+
             activity.stop()
             if ( ((song % 2) == 0) and (NSongIdentified > 0)): #at least 1 song over 2 has been correctly reproduced
                 reproduce_song(MA_interactionLevel, 2) #wow evviva!
-            elif activity.other_activity > 20 or activity.Nbeat < 3:
+            if (activity.sequence_identified == 0) and (activity.other_activity > 20 or activity.Nbeat < 3):
                 print("the child is not performing the activity")
+                reproduce_song(MA_interactionLevel, 7)  # sad :(
             print(".")
             print("next song in the same level")
             print(".")
+            activity.sequence_identified = 0
         # LEVEL CONCLUDED: checking for results. if 50% of the activity is correct: next level. else: repeat the level
         if (song == NSongsinLevel): #end of the level
             if NSongIdentified >= ((NSongsinLevel - 1) // 2): #50% correct

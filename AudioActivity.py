@@ -134,6 +134,8 @@ class AudioActivity:
         elif decibel < LOW_THRESHOLD:
             self.silence += 1
             self.noise = 0
+            self.t2 = time.perf_counter()
+            self.elapsed_time = self.t2 - self.t1
             #if self.silence > 50:
                 #print("silence")
         return in_data, pyaudio.paContinue

@@ -156,8 +156,8 @@ with suppress_stdout_stderr():
         waitingForSounds = 0
         NSongsinLevel = 7  # number of songs in a level
         MA_interactionLevel = 0  # contains the audios for interaction in MA
-        answerTime = 10.0 # minimum time given to reproduce a song
-        TIME_OUT_song = 15.0 # maximum time given to reproduce a song
+        answerTime = 9.0 # minimum time given to reproduce a song
+        TIME_OUT_song = 12.0 # maximum time given to reproduce a song
         angle_acquisition = 0
 
 
@@ -291,6 +291,12 @@ with suppress_stdout_stderr():
                     song = 0
                     functions_main.reproduce_song(ActivityLevel, song)  # Attenti alla musica!
                     NSongIdentified = 0
+                    if ActivityLevel == 1:
+                        answerTime -= 3.0
+                        TIME_OUT_song -= 3.0
+                    else:
+                        answerTime = 9.0
+                        TIME_OUT_song = 12.0
                     while song < NSongsinLevel:
                         song += 1
                         if song == NSongsinLevel:
@@ -322,6 +328,7 @@ with suppress_stdout_stderr():
                         while activity.silence < 15 and activity.elapsed_time < TIME_OUT_song:  # wait in case the child is still playing
                             continue
                         activity.stop()
+                        #reaction of the robot to the 2 songs just performed
                         if (((song % 2) == 0) and (NSongIdentified > 0)):  # at least 1 song over 2 has been correctly reproduced
                             functions_main.reproduce_song(MA_interactionLevel, 2)  # wow evviva!
                             functions_main.send_uno_lights(arduino.ser1, "happy")
@@ -356,8 +363,6 @@ with suppress_stdout_stderr():
                             # if the child was not able to pass to the next level, the same will be reproposed
                             Nid -= ((NSongsinLevel - 1) // 2)
                         TOTSongsIdentified = TOTSongsIdentified + NSongIdentified
-                    #song += 1
-                    #functions_main.reproduce_song(ActivityLevel, song)
 
                     actual_time_MA = time.time()
                     duration_MA = duration_MA + (actual_time_MA - start_time_MA)
