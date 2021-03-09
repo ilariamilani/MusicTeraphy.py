@@ -327,6 +327,7 @@ with suppress_stdout_stderr():
                             if activity.sequence_identified > 0:
                                 print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
                                 functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
+                                functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "none") #small rotations left and right
                                 NSongIdentified += 1
                                 time.sleep(1.0)
                                 identification_time = time.perf_counter()
@@ -342,10 +343,13 @@ with suppress_stdout_stderr():
                             functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
                         if (activity.sequence_identified == 0) and (activity.other_activity > 20 or activity.Nbeat < 3):
                             print("the child is not performing the activity")
-                            functions_main.reproduce_action_sound("sad")
-                            functions_main.reproduce_song(MA_interactionLevel, 7)  # sad :(
                             functions_main.send_uno_lights(arduino.ser1, "sad") # blue lights
-                            #  functions_main.send_initial_action_arduino("sad", arduino.ser, "none")????
+                            functions_main.reproduce_action_sound("sad")
+                            functions_main.send_initial_action_arduino("openToRight", arduino.ser, "none") #back left
+                            functions_main.reproduce_song(MA_interactionLevel, 7)  # dai gioca con me :(
+                            functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
+                            functions_main.send_initial_action_arduino("openBackToLeft", arduino.ser, "none") #forth left
+                            functions_main.send_initial_action_arduino("backForth", arduino.ser, "none") #small backforth
                         print(".")
                         print("next song in the same level")
                         print(".")
@@ -369,9 +373,11 @@ with suppress_stdout_stderr():
                             print(".")
                             functions_main.send_uno_lights(arduino.ser1, "sad")  # blue lights
                             functions_main.reproduce_action_sound("sad")
+                            functions_main.send_initial_action_arduino("openToRight", arduino.ser, "none") #back left
                             functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
-                            functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "none") #or excited_attract ?
+                            functions_main.send_initial_action_arduino("openBackToLeft", arduino.ser, "none") #forth left
                             functions_main.reproduce_song(MA_interactionLevel, 3)  # riproviamo?
+                            functions_main.send_initial_action_arduino("backForth", arduino.ser, "none") #small backforth
                             # if the child was not able to pass to the next level, the same will be reproposed
                             Nid -= ((NSongsinLevel - 1) // 2)
                         TOTSongsIdentified = TOTSongsIdentified + NSongIdentified
