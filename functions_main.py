@@ -7,7 +7,7 @@ previous_action = "none"
 next_action = "none"
 state_user = ""
 current_action = "none"
-audio_list = ['CantaConMe', 'SuonaConMe', 'wow', 'Evviva', 'CheBravo']
+audio_list = ["sounds/Evviva.wav", "sounds/wow.wav", "sounds/SuonaConMe.wav", "sounds/CheBravo.wav"]
 
 
 def human_verification(angle_mean, user, count): #return if the object detected by sonar is a human
@@ -138,7 +138,7 @@ def reproduce_song(level, Nsong):
         elif (Nsong == 8):
             # pick a random choice from a list of strings.
             audio = random.choice(audio_list)
-            PlayAudio().play("sounds/audio.wav")
+            PlayAudio().play(audio)
     if (level == 1):
         if (Nsong == 0):
             PlayAudio().play("sounds/AttentiallaMusica1.wav")

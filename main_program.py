@@ -291,6 +291,7 @@ with suppress_stdout_stderr():
                 ActivityLevel = 1
                 while ActivityLevel < 4:
                     song = 0
+                    functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
                     functions_main.reproduce_song(ActivityLevel, song)  # Attenti alla musica!
                     NSongIdentified = 0
                     if ActivityLevel == 1:
@@ -304,16 +305,16 @@ with suppress_stdout_stderr():
                         if song == NSongsinLevel:
                             print("end of level")
                             break
-                        if (((song % 2) != 0) and (song != NSongsinLevel)):  # every time a new song is played (odd number)(every song is reproduced twice)
+                        if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
+                            functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
                             functions_main.reproduce_song(MA_interactionLevel, 0)  # suona con me!
-                            # green lights
                         #if song == 2:
+                        functions_main.send_uno_lights(arduino.ser1, "angry") # red lights
                         functions_main.reproduce_song(MA_interactionLevel, 5)  # ora tocca a me!
-                        # red lights
                         functions_main.reproduce_song(ActivityLevel, song)  # reproducing the song
                         #if song == 1:
+                        functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
                         functions_main.reproduce_song(MA_interactionLevel, 4)  # tocca a te!
-                        # green lights
                         # BEAT RECOGNITION
                         activity = AudioActivity()
                         activity.start(id=Nid)
@@ -325,7 +326,7 @@ with suppress_stdout_stderr():
                             time.sleep(1.0)
                             if activity.sequence_identified > 0:
                                 print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
-                                functions_main.send_uno_lights(arduino.ser1, "happy")
+                                functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
                                 NSongIdentified += 1
                                 time.sleep(1.0)
                                 identification_time = time.perf_counter()
@@ -336,14 +337,15 @@ with suppress_stdout_stderr():
                         activity.stop()
                         #reaction of the robot to the 2 songs just performed
                         if (((song % 2) == 0) and (NSongIdentified > 0)):  # at least 1 song over 2 has been correctly reproduced
+                            functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
                             functions_main.reproduce_song(MA_interactionLevel, 2)  # wow evviva!
-                            functions_main.send_uno_lights(arduino.ser1, "happy")
                             functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
                         if (activity.sequence_identified == 0) and (activity.other_activity > 20 or activity.Nbeat < 3):
                             print("the child is not performing the activity")
-                            functions_main.reproduce_song(MA_interactionLevel, 7)  # sad :(
-                            functions_main.send_uno_lights(arduino.ser1, "sad")
                             functions_main.reproduce_action_sound("sad")
+                            functions_main.reproduce_song(MA_interactionLevel, 7)  # sad :(
+                            functions_main.send_uno_lights(arduino.ser1, "sad") # blue lights
+                            #  functions_main.send_initial_action_arduino("sad", arduino.ser, "none")????
                         print(".")
                         print("next song in the same level")
                         print(".")
@@ -355,19 +357,21 @@ with suppress_stdout_stderr():
                             print("yeeeeeeeeeeeeeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy ready fot the next level")
                             print(".")
                             functions_main.reproduce_song(MA_interactionLevel, 1)  # wow, bravo! reproduced when the level has been passed
-                            functions_main.send_uno_lights(arduino.ser1, "happy")
+                            functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
                             functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
                             functions_main.reproduce_song(MA_interactionLevel, 6) # canta con me!
-                            functions_main.send_uno_lights(arduino.ser1, "happy")
+                            functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
                             functions_main.reproduce_song(ActivityLevel, song) # long song
                             ActivityLevel += 1  # next level
                         else:
                             print(".")
                             print("well well riproviamooo")
                             print(".")
-                            functions_main.reproduce_song(MA_interactionLevel, 3)  # riproviamo?
-                            functions_main.send_uno_lights(arduino.ser1, "interested_excited")
+                            functions_main.send_uno_lights(arduino.ser1, "sad")  # blue lights
+                            functions_main.reproduce_action_sound("sad")
+                            functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
                             functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "none") #or excited_attract ?
+                            functions_main.reproduce_song(MA_interactionLevel, 3)  # riproviamo?
                             # if the child was not able to pass to the next level, the same will be reproposed
                             Nid -= ((NSongsinLevel - 1) // 2)
                         TOTSongsIdentified = TOTSongsIdentified + NSongIdentified

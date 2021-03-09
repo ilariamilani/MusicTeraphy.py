@@ -10,7 +10,6 @@ from audioplayer import PlayAudio
 #print(os.path.dirname(os.path.abspath(__file__)))
 #os.chdir(os.path.dirname(os.path.abspath(__file__)))  # change working directory
 
-#audio_list = ['CantaConMe', 'SuonaConMe', 'wow', 'Evviva', 'CheBravo']
 audio_list = ["sounds/Evviva.wav", "sounds/wow.wav", "sounds/SuonaConMe.wav", "sounds/CheBravo.wav"]
 
 #da mettere in funtions_main
@@ -106,7 +105,7 @@ MA_interactionLevel = 0 #contains the audios for interaction in MA
 if __name__ == '__main__':
 
     reproduce_song(MA_interactionLevel, 8) # random!
-    # Nid = 0
+    Nid = 0
     answerTime = 8.0
     TIME_OUT_song = 12.0  # maximum time given to reproduce a song
     ActivityLevel = 1
