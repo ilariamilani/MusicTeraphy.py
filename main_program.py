@@ -36,11 +36,11 @@ def build_argparser():
     return parser
 
 
-
 def on_press(key):
     global child_action
     global MusicalActivity
     global receiveAction
+    global good_interaction
     try:
         print("{0} Pressed".format(key.char))        
         if key.char == ("a"):
@@ -59,6 +59,7 @@ def on_press(key):
             child_action = "hug"
             MusicalActivity = False
             receiveAction = True
+            good_interaction = True
         elif key.char == ("g"):
             child_action = "strongHug"
             MusicalActivity = False
@@ -88,6 +89,7 @@ def on_release(key):
 child_action = " "
 MusicalActivity = False
 receiveAction = False
+good_interaction = False
 breakFromKey = False
 listener = keyboard.Listener(on_press = on_press, on_release = on_release)
 listener.start()
@@ -139,6 +141,7 @@ with suppress_stdout_stderr():
         global receiveAction
         global MusicalActivity
         global child_action
+        global good_interaction
         firstTime = True
         lookTo = ""
         meanAngle = 0
@@ -157,9 +160,11 @@ with suppress_stdout_stderr():
         MA_interactionLevel = 0  # contains the audios for interaction in MA
         answerTime = 9.0 # minimum time given to reproduce a song
         TIME_OUT_song = 12.0 # maximum time given to reproduce a song
-        TIME_OUT_MA = 8.0
+        TIME_OUT_MA = 6.0
         angle_acquisition = 0
         identification_time = 0
+        time_goodInteraction = 0
+        time_loop = 0
 
 
         #--> Counting the time that manages the reseach of a human
@@ -281,7 +286,8 @@ with suppress_stdout_stderr():
             #interaction = 0 or interaction=1 is when the system is trying to estabilish an interaction with the child
             #interaction = 2 is when the robot is already interacting with the human
 
-            if MusicalActivity:
+            time_loop = time.time()
+            if MusicalActivity or ((time_goodInteraction != 0) and (time_goodInteraction + TIME_OUT_MA < time_loop)):
                 functions_main.send_uno_lights(arduino.ser1, "happy")  # rainbow lights
                 functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "none")  # small rotations left and right
                 # explaination of the activity
@@ -300,9 +306,9 @@ with suppress_stdout_stderr():
                     if ActivityLevel == 1:
                         answerTime -= 3.0
                         TIME_OUT_song -= 3.0
-                    else:
-                        answerTime = 9.0
-                        TIME_OUT_song = 12.0
+                    elif ActivityLevel == 2:
+                        answerTime += 3.0
+                        TIME_OUT_song += 3.0
                     while song < NSongsinLevel:
                         song += 1
                         if song == NSongsinLevel:
@@ -605,6 +611,11 @@ with suppress_stdout_stderr():
                                 functions_main.send_uno_lights(arduino.ser1, functions_main.current_action)
                                 functions_main.send_initial_action_arduino( functions_main.current_action, arduino.ser, functions_main.current_action)
                                 receiveAction = False
+                                if good_interaction == True:
+                                    time_goodInteraction = time.time()
+                                    good_interaction = False
+                                else:
+                                    time_goodInteraction = 0
                             else:
                                 MusicalActivity = True
                                 start_time_MA = time.time()
