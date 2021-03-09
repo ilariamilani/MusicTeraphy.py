@@ -36,7 +36,6 @@ def build_argparser():
     return parser
 
 
-#substituted JointAttention with MusicalActivity
 
 def on_press(key):
     global child_action
@@ -69,7 +68,7 @@ def on_press(key):
             MusicalActivity = False
             receiveAction = True
         elif key.char == ("j"):
-            child_action = "joint"
+            child_action = "activity"
             MusicalActivity = False
             receiveAction = True
         else:
@@ -158,6 +157,7 @@ with suppress_stdout_stderr():
         MA_interactionLevel = 0  # contains the audios for interaction in MA
         answerTime = 9.0 # minimum time given to reproduce a song
         TIME_OUT_song = 12.0 # maximum time given to reproduce a song
+        TIME_OUT_MA = 8.0
         angle_acquisition = 0
         identification_time = 0
 
@@ -282,6 +282,8 @@ with suppress_stdout_stderr():
             #interaction = 2 is when the robot is already interacting with the human
 
             if MusicalActivity:
+                functions_main.send_uno_lights(arduino.ser1, "happy")  # rainbow lights
+                functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "none")  # small rotations left and right
                 # explaination of the activity
                 time_out_system_hum = 0
                 TOTSongsIdentified = 0
@@ -292,6 +294,7 @@ with suppress_stdout_stderr():
                 while ActivityLevel < 4:
                     song = 0
                     functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
+                    functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "none")  # small rotations left and right
                     functions_main.reproduce_song(ActivityLevel, song)  # Attenti alla musica!
                     NSongIdentified = 0
                     if ActivityLevel == 1:
@@ -306,15 +309,18 @@ with suppress_stdout_stderr():
                             print("end of level")
                             break
                         if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
+                            #new song!
                             functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
                             functions_main.reproduce_song(MA_interactionLevel, 0)  # suona con me!
                         #if song == 2:
                         functions_main.send_uno_lights(arduino.ser1, "angry") # red lights
                         functions_main.reproduce_song(MA_interactionLevel, 5)  # ora tocca a me!
+                        functions_main.send_initial_action_arduino("move", arduino.ser, "none")  # forth
                         functions_main.reproduce_song(ActivityLevel, song)  # reproducing the song
                         #if song == 1:
                         functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
                         functions_main.reproduce_song(MA_interactionLevel, 4)  # tocca a te!
+                        functions_main.send_initial_action_arduino("scared", arduino.ser, "none")  # back
                         # BEAT RECOGNITION
                         activity = AudioActivity()
                         activity.start(id=Nid)
@@ -326,8 +332,7 @@ with suppress_stdout_stderr():
                             time.sleep(1.0)
                             if activity.sequence_identified > 0:
                                 print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
-                                functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
-                                functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "none") #small rotations left and right
+                                functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
                                 NSongIdentified += 1
                                 time.sleep(1.0)
                                 identification_time = time.perf_counter()
@@ -337,17 +342,29 @@ with suppress_stdout_stderr():
                                 continue
                         activity.stop()
                         #reaction of the robot to the 2 songs just performed
-                        if (((song % 2) == 0) and (NSongIdentified > 0)):  # at least 1 song over 2 has been correctly reproduced
-                            functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
-                            functions_main.reproduce_song(MA_interactionLevel, 2)  # wow evviva!
-                            functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
+                        if (song % 2) == 0:
+                            if NSongIdentified > 0:  # at least 1 song over 2 has been correctly reproduced by the child
+                                print("song well reproduced by the child")
+                                functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
+                                functions_main.reproduce_song(MA_interactionLevel, 2)  # wow evviva!
+                                functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
+                            else:
+                                print("the child did not reproduced the song well")
+                                functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
+                                functions_main.send_initial_action_arduino("scared", arduino.ser, "none")  # back
+                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "none")  # small movements left and right
+                                functions_main.reproduce_action_sound("sad")
+                                functions_main.send_initial_action_arduino("move", arduino.ser, "none")  # forth
+                                functions_main.send_uno_lights(arduino.ser1, "excited_attract")  # random lights
+                                functions_main.reproduce_song(MA_interactionLevel, 7)  # dai gioca con me! or riproviamo
+                                functions_main.send_initial_action_arduino("backForth", arduino.ser, "none")  # small backforth
                         if (activity.sequence_identified == 0) and (activity.other_activity > 20 or activity.Nbeat < 3):
                             print("the child is not performing the activity")
                             functions_main.send_uno_lights(arduino.ser1, "sad") # blue lights
                             functions_main.reproduce_action_sound("sad")
                             functions_main.send_initial_action_arduino("openToRight", arduino.ser, "none") #back left
                             functions_main.reproduce_song(MA_interactionLevel, 7)  # dai gioca con me :(
-                            functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
+                            functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
                             functions_main.send_initial_action_arduino("openBackToLeft", arduino.ser, "none") #forth left
                             functions_main.send_initial_action_arduino("backForth", arduino.ser, "none") #small backforth
                         print(".")
@@ -361,8 +378,9 @@ with suppress_stdout_stderr():
                             print("yeeeeeeeeeeeeeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy ready fot the next level")
                             print(".")
                             functions_main.reproduce_song(MA_interactionLevel, 1)  # wow, bravo! reproduced when the level has been passed
-                            functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
-                            functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
+                            #hai superato il livello!!!
+                            functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
+                            functions_main.send_initial_action_arduino("happy", arduino.ser, "none") #rotation on itself and back
                             functions_main.reproduce_song(MA_interactionLevel, 6) # canta con me!
                             functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
                             functions_main.reproduce_song(ActivityLevel, song) # long song
@@ -371,11 +389,12 @@ with suppress_stdout_stderr():
                             print(".")
                             print("well well riproviamooo")
                             print(".")
-                            functions_main.send_uno_lights(arduino.ser1, "sad")  # blue lights
+                            functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
+                            functions_main.send_initial_action_arduino("scared", arduino.ser, "none") #back
+                            functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "none") #small movements left and right
                             functions_main.reproduce_action_sound("sad")
-                            functions_main.send_initial_action_arduino("openToRight", arduino.ser, "none") #back left
+                            functions_main.send_initial_action_arduino("move", arduino.ser, "none") #forth
                             functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
-                            functions_main.send_initial_action_arduino("openBackToLeft", arduino.ser, "none") #forth left
                             functions_main.reproduce_song(MA_interactionLevel, 3)  # riproviamo?
                             functions_main.send_initial_action_arduino("backForth", arduino.ser, "none") #small backforth
                             # if the child was not able to pass to the next level, the same will be reproposed
@@ -387,9 +406,9 @@ with suppress_stdout_stderr():
                     start_time_MA = actual_time_MA
                     print("Time MA: {:.1f}".format(duration_MA))  # the duration of each level of the activity
 
-                functions_main.send_uno_lights(arduino.ser1, "happy")
+                functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
                 # thank you for playing with me
-                functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
+                functions_main.send_initial_action_arduino("happy", arduino.ser, "none") #rotation on itself and back
 
                 if duration_MA != 0:
                     now = datetime.now()
@@ -401,6 +420,14 @@ with suppress_stdout_stderr():
                 duration_MA = 0
                 NSongIdentified = 0
 
+                actual_time_MA = time.time()
+                TIME_OUT_MA = TIME_OUT_MA + actual_time_MA
+                while actual_time_MA < TIME_OUT_MA:  # if after MA nothing happens
+                    if receiveAction == True:
+                        break
+                    actual_time_MA = time.time()
+                print("Terminating the program") #unless I receive an action from the child
+                child_action = "QUIT"
 
             if interaction != 2 and not MusicalActivity: #If I'm not interacting with the human
                 print("Interaction != 2, I'm not interacting with the human")
@@ -573,7 +600,7 @@ with suppress_stdout_stderr():
                             functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract")
                             firstTime = False
                         if receiveAction:
-                            if child_action != "joint":
+                            if child_action != "activity":
                                 functions_main.decide_action(child_action) #decide robot behaviour based on action of the child and movement of the robot
                                 functions_main.send_uno_lights(arduino.ser1, functions_main.current_action)
                                 functions_main.send_initial_action_arduino( functions_main.current_action, arduino.ser, functions_main.current_action)
@@ -582,6 +609,7 @@ with suppress_stdout_stderr():
                                 MusicalActivity = True
                                 start_time_MA = time.time()
                                 duration_MA = 0
+                                receiveAction = False
 
                         print("Child Action: " + child_action + " | " + "Robot Action: " + functions_main.current_action)
                     print("Time Out Human {:.1f} / 10 Sec".format(time_out_system_hum) )
