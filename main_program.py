@@ -450,7 +450,7 @@ with suppress_stdout_stderr():
                 print("Interaction != 2, I'm not interacting with the human")
                 if arduino.old_user != "none": #if an object is detected by the sonar, check if it is a human
                     print("Object detected by sonars")
-                    if ((meanAngle >= 0) or (prevMeanAngle >= 0) or (soundDirection == "ECHO")):  # voice detected by BlueCoin
+                    if ((meanAngle >= 0) or (soundDirection == "ECHO")):  # voice detected by BlueCoin
                         print("Human detected in the FOV")
                         count = 4
                         if meanAngle >= 0:
@@ -488,8 +488,7 @@ with suppress_stdout_stderr():
                             elif (soundDirection == "BACK"):
                                 print("Human detected in back position...")
                                 functions_main.send_uno_lights(arduino.ser1, "rotateRight")
-                                functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
-                                functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
+                                functions_main.send_initial_action_arduino("turnBack", arduino.ser, "none")
                     else : #if there is no human (no angle from BlueCoin), but object detected from sonar
                         #GET CLOSER TO THE OBJECT! maybe the child is to far for the BlueCoin to detect his voice
                         if arduino.new_dist > 120.0:  # if the distance to the chld is bigger than , get closer
@@ -497,7 +496,7 @@ with suppress_stdout_stderr():
                             functions_main.send_initial_action_arduino("move", arduino.ser, "move_find")
                             print("Is the user too far?")
                         else: #the user might be in front of the robot but silent, encourage to make sounds and wait
-                            if waitingForSounds < 3:
+                            if waitingForSounds < 8:
                                 if waitingForSounds == 0: # dai fatti sentire!
                                     functions_main.send_uno_lights(arduino.ser1, "excited_attract")
                                     functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract")
@@ -526,10 +525,9 @@ with suppress_stdout_stderr():
                         elif (soundDirection == "BACK"):
                             print("Searching back...")
                             functions_main.send_uno_lights(arduino.ser1, "rotateRight")
-                            functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
-                            functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
+                            functions_main.send_initial_action_arduino("turnBack", arduino.ser, "none")
                     else: #if there is no human: no sounds perceived from BlueCoin
-                        if waitingForSounds < 3:
+                        if waitingForSounds < 8:
                             if waitingForSounds == 0: # dai fatti sentire!
                                 functions_main.send_uno_lights(arduino.ser1, "excited_attract")
                                 functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract")
@@ -572,8 +570,7 @@ with suppress_stdout_stderr():
                             elif (soundDirection == "BACK"):
                                 print("INTERACTION LOOP - Child is on the back ")
                                 functions_main.send_uno_lights(arduino.ser1, "rotateRight")
-                                functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
-                                functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
+                                functions_main.send_initial_action_arduino("turnBack", arduino.ser, "none")
                             elif ((soundDirection == "NONE") or (soundDirection == "ECHO")): #if no sounds perceived from BlueCoin
                                 if waitingForSounds < 3:
                                      if waitingForSounds == 0: # dai fatti sentire!
@@ -608,7 +605,7 @@ with suppress_stdout_stderr():
                             lookTo = "rotateLeft"
                             time_out_system_hum = time_out_system_hum + 22
                         elif (soundDirection == "BACK"):
-                            lookTo = "rotateRight"
+                            lookTo = "turnBack"
                             time_out_system_hum = time_out_system_hum + 22
                         print("INTERACTION LOOP - Correctly interacting, waiting to receive an action")
 
