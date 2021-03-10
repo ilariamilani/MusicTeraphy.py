@@ -20,6 +20,8 @@ if __name__ == '__main__':
     NSongIdentified = 0
     TIME_OUT_song = 15.0  # maximum time given to reproduce a song
 
+    #prove
+
     # for letter in 'Python':  # First Example
     #     if letter == 'h':
     #         var = 10  # Second Example
@@ -34,28 +36,28 @@ if __name__ == '__main__':
     #     print (letter)
     # print("4")
 
-    a=3
-    b=5
-    c=4
-    d=3
-    e=6
-    f=7
-    for letter in 'Python':
-        if a == 3:
-            if b == 5:
-                if c== 4:
-                    if d==3:
-                        if e==6:
-                            if f==7:
-                                print(f)
-                                break
-
-                            print(e)
-                        print(d)
-                    print(c)
-                print(b)
-            print(a)
-        print(letter)
+    # a=3
+    # b=5
+    # c=4
+    # d=3
+    # e=6
+    # f=7
+    # for letter in 'Python':
+    #     if a == 3:
+    #         if b == 5:
+    #             if c== 4:
+    #                 if d==3:
+    #                     if e==6:
+    #                         if f==7:
+    #                             print(f)
+    #                             break
+    #
+    #                         print(e)
+    #                     print(d)
+    #                 print(c)
+    #             print(b)
+    #         print(a)
+    #     print(letter)
 
 
 
