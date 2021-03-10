@@ -12,13 +12,13 @@ audio_list = ["sounds/Evviva.wav", "sounds/wow.wav", "sounds/SuonaConMe.wav", "s
 
 def human_verification(angle_mean, user, count): #return if the object detected by sonar is a human
     #print("angle: " + str(angle_mean)+", User:" + user)
-    if (( user== "front") and ((angle_mean >= 165 ) and (angle_mean <= 195)) and (count >= 2)): # 180+-30
+    if (( user== "front") and ((angle_mean >= 160 ) and (angle_mean <= 200)) and (count >= 2)): # 180+-40
         print("Human front")
         tracking_a_user = True
-    elif (( user== "right") and (angle_mean <= 195) and (angle_mean >= 315)  and (count >= 2)): # 90+-
+    elif (( user== "right") and (angle_mean <= 200) and (angle_mean >= 315)  and (count >= 2)): # 90+-
         print("human right")
         tracking_a_user = True
-    elif ((user == "left") and (angle_mean >= 45) and (angle_mean <= 165) and (count >= 2)): # 270+-
+    elif ((user == "left") and (angle_mean >= 45) and (angle_mean <= 160) and (count >= 2)): # 270+-
         print("Human left")
         tracking_a_user = True
     else:
@@ -147,9 +147,9 @@ def reproduce_song(level, Nsong):
         elif (Nsong == 2):
             PlayAudio().play("sounds/dindondan.wav")
         elif (Nsong == 3):
-            PlayAudio().play("sounds/tichetà.wav")
+            PlayAudio().play("sounds/ticheta.wav")
         elif (Nsong == 4):
-            PlayAudio().play("sounds/tichetà.wav")
+            PlayAudio().play("sounds/ticheta.wav")
         elif (Nsong == 5):
             PlayAudio().play("sounds/opopop.wav")
         elif (Nsong == 6):

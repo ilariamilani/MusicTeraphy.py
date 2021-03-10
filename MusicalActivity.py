@@ -45,9 +45,9 @@ def reproduce_song(level, Nsong):
         elif (Nsong == 2):
             PlayAudio().play("sounds/dindondan.wav")
         elif (Nsong == 3):
-            PlayAudio().play("sounds/tichetà.wav")
+            PlayAudio().play("sounds/ticheta.wav")
         elif (Nsong == 4):
-            PlayAudio().play("sounds/tichetà.wav")
+            PlayAudio().play("sounds/ticheta.wav")
         elif (Nsong == 5):
             PlayAudio().play("sounds/opopop.wav")
         elif (Nsong == 6):

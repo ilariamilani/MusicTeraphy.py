@@ -64,10 +64,10 @@ if __name__ == '__main__':
 
 
 
-    PlayAudio().play("sounds/BrillaBrillaStellina.wav")
+    PlayAudio().play("sounds/queen.wav")
     activity = AudioActivity()
     activity.sequence_identified = 0
-    activity.start(id=5)
+    activity.start(id=4)
     while ((activity.elapsed_time < answerTime or activity.silence < 30) and activity.elapsed_time < TIME_OUT_song):  # definesongtime #wait in case the child is still playing
         time.sleep(1.0)
         if activity.sequence_identified > 0:
@@ -81,10 +81,10 @@ if __name__ == '__main__':
 
     print("next")
 
-    PlayAudio().play("bravo.wav")
+    PlayAudio().play("queen.wav")
     activity = AudioActivity()
     NSongIdentified = 0
-    activity.start(id=5)
+    activity.start(id=4)
     while ((activity.elapsed_time < answerTime or activity.silence < 30) and activity.elapsed_time < TIME_OUT_song):  # definesongtime #wait in case the child is still playing
         time.sleep(1.0)
         if activity.sequence_identified > 0:

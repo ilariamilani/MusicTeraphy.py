@@ -267,11 +267,11 @@ with suppress_stdout_stderr():
             print("meanAngle: {:.1f}".format(meanAngle))
 
             if ((echo == 0) and (meanAngle >= 0)):
-               if ((meanAngle >= 165 ) and (meanAngle <= 195)): # sounds from the front
+               if ((meanAngle >= 160 ) and (meanAngle <= 200)): # sounds from the front
                    soundDirection = "FRONT"
-               elif ((meanAngle <= 195) and (meanAngle >= 315)): # sounds from the right
+               elif ((meanAngle <= 200) and (meanAngle >= 315)): # sounds from the right
                    soundDirection = "RIGHT"
-               elif ((meanAngle >= 45) and (meanAngle <= 165)): # sounds from the left
+               elif ((meanAngle >= 45) and (meanAngle <= 160)): # sounds from the left
                    soundDirection = "LEFT"
                elif (((meanAngle >= 315) and (meanAngle <= 45))): # sounds from the back
                    soundDirection = "BACK"
