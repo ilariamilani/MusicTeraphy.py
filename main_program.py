@@ -145,7 +145,6 @@ with suppress_stdout_stderr():
         firstTime = True
         lookTo = ""
         meanAngle = 0
-        prevMeanAngle = 0
         prevpreviousAngle = 0
         previousAngle = 0
         angle = 0
@@ -160,7 +159,8 @@ with suppress_stdout_stderr():
         MA_interactionLevel = 0  # contains the audios for interaction in MA
         answerTime = 9.0 # minimum time given to reproduce a song
         TIME_OUT_song = 12.0 # maximum time given to reproduce a song
-        TIME_OUT_MA = 6.0
+        TIME_OUT_MA = 9.0
+        time_end_MA = 0
         angle_acquisition = 0
         identification_time = 0
         time_goodInteraction = 0
@@ -211,7 +211,6 @@ with suppress_stdout_stderr():
                 print("angle from BlueCoin=  {:.1f}".format(angle) )
 
             # check for voice's direction and echo
-            prevMeanAngle = meanAngle
             if angle < 0 and (previousAngle >= 0 or prevpreviousAngle >= 0):
                 if previousAngle >= 0 and prevpreviousAngle >= 0:
                     if abs(previousAngle - prevpreviousAngle) < 100:
@@ -315,19 +314,21 @@ with suppress_stdout_stderr():
                         if song == NSongsinLevel:
                             print("end of level")
                             break
-                        if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
+                        #if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
                             #new song!
-                            functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
-                            functions_main.reproduce_song(MA_interactionLevel, 0)  # suona con me!
+                            #functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
+                            #functions_main.reproduce_song(MA_interactionLevel, 0)  # suona con me!
                         #if song == 2:
                         functions_main.send_uno_lights(arduino.ser1, "angry") # red lights
                         functions_main.reproduce_song(MA_interactionLevel, 5)  # ora tocca a me!
-                        functions_main.send_initial_action_arduino("move", arduino.ser, "none")  # forth
+                        functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "none")  # small movements left and right
+                        #functions_main.send_initial_action_arduino("move", arduino.ser, "none")  # forth
                         functions_main.reproduce_song(ActivityLevel, song)  # reproducing the song
                         #if song == 1:
                         functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
                         functions_main.reproduce_song(MA_interactionLevel, 4)  # tocca a te!
-                        functions_main.send_initial_action_arduino("scared", arduino.ser, "none")  # back
+                        functions_main.send_initial_action_arduino("backForth", arduino.ser, "none") #small backforth
+                        #functions_main.send_initial_action_arduino("scared", arduino.ser, "none")  # back
                         # BEAT RECOGNITION
                         activity = AudioActivity()
                         activity.start(id=Nid)
@@ -381,18 +382,14 @@ with suppress_stdout_stderr():
                                 print("Terminating the program")  # unless I receive an action from the child
                                 child_action = "QUIT"
                                 break
-                        print(".")
                         print("next song in the same level")
-                        print(".")
                         activity.sequence_identified = 0
                     if child_action == "QUIT":
                         break
                     # LEVEL CONCLUDED: checking for results. if 50% of the activity is correct: next level. else: repeat the level
                     if (song == NSongsinLevel):  # end of the level
                         if NSongIdentified >= ((NSongsinLevel - 1) // 2):  # 50% correct
-                            print(".")
                             print("yeeeeeeeeeeeeeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy ready fot the next level")
-                            print(".")
                             functions_main.reproduce_song(MA_interactionLevel, 1)  # wow, bravo! reproduced when the level has been passed
                             #hai superato il livello!!!
                             functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
@@ -402,9 +399,7 @@ with suppress_stdout_stderr():
                             functions_main.reproduce_song(ActivityLevel, song) # long song
                             ActivityLevel += 1  # next level
                         else:
-                            print(".")
                             print("well well riproviamooo")
-                            print(".")
                             functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
                             functions_main.send_initial_action_arduino("scared", arduino.ser, "none") #back
                             functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "none") #small movements left and right
@@ -437,10 +432,11 @@ with suppress_stdout_stderr():
                 NSongIdentified = 0
 
                 actual_time_MA = time.time()
-                TIME_OUT_MA = TIME_OUT_MA + actual_time_MA
-                while actual_time_MA < TIME_OUT_MA:  # if after MA nothing happens
+                time_end_MA = time.time()
+                while actual_time_MA < TIME_OUT_MA + time_end_MA:  # if after MA nothing happens
                     if receiveAction == True:
                         break
+                    time.sleep(0.5)
                     actual_time_MA = time.time()
                 if receiveAction != True:
                     print("Terminating the program") #unless I receive an action from the child
