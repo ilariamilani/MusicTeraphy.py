@@ -165,6 +165,7 @@ with suppress_stdout_stderr():
         identification_time = 0
         time_goodInteraction = 0
         time_loop = 0
+        child_not_involved = 0
 
 
         #--> Counting the time that manages the reseach of a human
@@ -354,6 +355,7 @@ with suppress_stdout_stderr():
                                 functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
                                 functions_main.reproduce_song(MA_interactionLevel, 2)  # wow evviva!
                                 functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
+                                child_not_involved = 0
                             else:
                                 print("the child did not reproduced the song well")
                                 functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
@@ -373,10 +375,18 @@ with suppress_stdout_stderr():
                             functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
                             functions_main.send_initial_action_arduino("openBackToLeft", arduino.ser, "none") #forth left
                             functions_main.send_initial_action_arduino("backForth", arduino.ser, "none") #small backforth
+                            child_not_involved += 1
+                            if child_not_involved > 4:
+                                print("the child doesn't want to play or didn't understand the activity")
+                                print("Terminating the program")  # unless I receive an action from the child
+                                child_action = "QUIT"
+                                break
                         print(".")
                         print("next song in the same level")
                         print(".")
                         activity.sequence_identified = 0
+                    if child_action == "QUIT":
+                        break
                     # LEVEL CONCLUDED: checking for results. if 50% of the activity is correct: next level. else: repeat the level
                     if (song == NSongsinLevel):  # end of the level
                         if NSongIdentified >= ((NSongsinLevel - 1) // 2):  # 50% correct
@@ -432,8 +442,9 @@ with suppress_stdout_stderr():
                     if receiveAction == True:
                         break
                     actual_time_MA = time.time()
-                print("Terminating the program") #unless I receive an action from the child
-                child_action = "QUIT"
+                if receiveAction != True:
+                    print("Terminating the program") #unless I receive an action from the child
+                    child_action = "QUIT"
 
             if interaction != 2 and not MusicalActivity: #If I'm not interacting with the human
                 print("Interaction != 2, I'm not interacting with the human")
