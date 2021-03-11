@@ -570,6 +570,8 @@ with suppress_stdout_stderr():
                         time_out_system = 0
                         start_time_out_system = time.time()
                         time_out_system_hum = 0
+                        receiveAction = False
+                        interaction = 0
                     else:
                         print("INTERACTION LOOP - Preparing the interaction")
                         #If there is a human interacting and i'm inside the timeout
