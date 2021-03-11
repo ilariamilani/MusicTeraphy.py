@@ -487,7 +487,8 @@ with suppress_stdout_stderr():
                             start_time_out_system_hum = time.time()
                             #THERE IS A HUMAN READY TO INTERACT WITH!
                             Finding_human = False
-                            #reproduce: ey ciao ti ho trovato!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                            functions_main.send_uno_lights(arduino.ser1, "excited_attract")
+                            functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract") #reproduce: ey ciao ti ho trovato!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         else: #if it finds an object that is not a human (angle sonar != angle BlueCoin), it must rotate until that obstacle is an human (in the angle s direction)
                             print("Object from sonar is not a human")
                             if (soundDirection == "FRONT" and arduino.new_dist > 150): #the human is in front of the robot and eventually right/left osbstacle are far
@@ -564,6 +565,7 @@ with suppress_stdout_stderr():
                     time_out_system_hum = 0
                 elif time_out_system_hum <= TIME_OUT_HUM and time_out_system<TIME_OUT and Finding_human == False:
                     if receiveAction and child_action == "object":
+                        functions_main.reproduce_action_sound("sad")
                         #reproduce ah sei un oggetto! dove sei?!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         functions_main.send_uno_lights(arduino.ser1, "rotateRight")
                         functions_main.send_initial_action_arduino("turnBack", arduino.ser, "none")
