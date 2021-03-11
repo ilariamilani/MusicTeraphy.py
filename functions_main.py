@@ -8,7 +8,23 @@ next_action = "none"
 state_user = ""
 current_action = "none"
 audio_list = ["sounds/Evviva.wav", "sounds/wow.wav", "sounds/SuonaConMe.wav", "sounds/CheBravo.wav"]
-
+bravo = []
+wrong = []
+riprova = []
+suona = []
+canta = []
+pain = []
+angry = []
+sad = []
+happy = []
+found = []
+object = []
+dovesei = []
+giochiamo = []
+myturn = []
+yourturn = []
+nongioca = []
+nextlevel = []
 
 def human_verification(angle_mean, user, count): #return if the object detected by sonar is a human
     #print("angle: " + str(angle_mean)+", User:" + user)
@@ -58,31 +74,73 @@ def send_initial_action_arduino(action, ser, sound):
 def reproduce_action_sound(action):
     if(action!="none" and action!="move_find"):
         if(action == "excited"):
-            PlayAudio().play("sounds/Giochiamo.wav")
-            PlayAudio().play("sounds/Excited_R2D2.wav")
+            audio = random.choice(giochiamo)
+            PlayAudio().play(audio)
         elif(action == "sad"):
-            PlayAudio().play("sounds/Sad_R2D2.wav")
-        elif(action == "out"):
-            PlayAudio().play("sounds/Playful_R2D2.wav")
+            audio = random.choice(sad)
+            PlayAudio().play(audio)
+        #elif(action == "out"):
+            #PlayAudio().play("sounds/Playful_R2D2.wav")
         elif(action == "found"):
-            PlayAudio().play("sounds/founding.wav")
-        elif(action == "move"):
-            PlayAudio().play("sounds/fordward.wav")
+            audio = random.choice(found)
+            PlayAudio().play(audio)
+        elif (action == "where"):
+            audio = random.choice(dovesei)
+            PlayAudio().play(audio)
+        elif (action == "object"):
+            audio = random.choice(object)
+            PlayAudio().play(audio)
+        #elif(action == "move"):
+            #PlayAudio().play("sounds/fordward.wav")
         elif(action == "excited_attract"): #robot identifies the user in front of it, ready to interact
-            PlayAudio().play("sounds/Excited_R2D2.wav")
+            audio = random.choice(happy)
+            PlayAudio().play(audio)
         elif(action == "interested_excited"):
-            PlayAudio().play("sounds/Giochiamo.wav")
+            audio = random.choice(giochiamo)
+            PlayAudio().play(audio)
         elif(action == "happy"): #after receiving a hug
-            PlayAudio().play("sounds/wow.wav")
-            PlayAudio().play("sounds/cheBello.wav")
+            audio = random.choice(happy)
+            PlayAudio().play(audio)
         elif(action == "very_scared"):
-            PlayAudio().play("sounds/AhiaBasta.wav")
-            #also the scream??
+            audio = random.choice(pain)
+            PlayAudio().play(audio)
         elif(action == "scared"):
-            PlayAudio().play("sounds/ahiaCheMale.wav")
+            audio = random.choice(pain)
+            PlayAudio().play(audio)
         elif(action == "angry"):
-            PlayAudio().play("sounds/No.wav")
-            PlayAudio().play("sounds/Snappy_R2D2.wav")
+            audio = random.choice(angry)
+            PlayAudio().play(audio)
+        elif (action == "good"):
+            audio = random.choice(bravo)
+            PlayAudio().play(audio)
+        elif (action == "sing"):
+            audio = random.choice(canta)
+            PlayAudio().play(audio)
+        elif (action == "play"):
+            audio = random.choice(suona)
+            PlayAudio().play(audio)
+        elif (action == "again"):
+            audio = random.choice(riprova)
+            PlayAudio().play(audio)
+        elif (action == "yourturn"):
+            audio = random.choice(yourturn)
+            PlayAudio().play(audio)
+        elif (action == "myturn"):
+            audio = random.choice(myturn)
+            PlayAudio().play(audio)
+        elif (action == "noplay"):
+            audio = random.choice(nongioca)
+            PlayAudio().play(audio)
+        elif (action == "wrong"):
+            audio = random.choice(wrong)
+            PlayAudio().play(audio)
+        elif (action == "nextlevel"):
+            audio = random.choice(nextlevel)
+            PlayAudio().play(audio)
+        elif (action == "startactivity"):
+            PlayAudio().play("hithere/.wav")
+        elif (action == "finishactivity"):
+            PlayAudio().play("byebye/.wav")
             
 def decide_action(action):
     global previous_action
@@ -116,29 +174,6 @@ def obtain_user_state(action):
     else: state_user = state_user        
         
 def reproduce_song(level, Nsong):
-    if (level == 0): #interaction with the user
-        if (Nsong == 0):
-            PlayAudio().play("sounds/SuonaConMe.wav")
-        elif (Nsong == 1):
-            PlayAudio().play("sounds/wow.wav")
-            PlayAudio().play("sounds/CheBravo.wav")
-        elif (Nsong == 2):
-            PlayAudio().play("sounds/wow.wav")
-            PlayAudio().play("sounds/Evviva.wav")
-        elif (Nsong == 3):
-            PlayAudio().play("sounds/Riproviamo.wav")
-        elif (Nsong == 4):
-            PlayAudio().play("sounds/ToccaATe.wav")
-        elif (Nsong == 5):
-            PlayAudio().play("sounds/OraToccaAMe.wav")
-        elif (Nsong == 6):
-            PlayAudio().play("sounds/CantaConMe.wav")
-        elif (Nsong == 7):
-            PlayAudio().play("sounds/Sad_R2D2.wav")
-        elif (Nsong == 8):
-            # pick a random choice from a list of strings.
-            audio = random.choice(audio_list)
-            PlayAudio().play(audio)
     if (level == 1):
         if (Nsong == 0):
             PlayAudio().play("sounds/AttentiallaMusica1.wav")

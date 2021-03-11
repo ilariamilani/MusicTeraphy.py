@@ -302,8 +302,7 @@ with suppress_stdout_stderr():
             time_loop = time.time()
             if MusicalActivity or ((time_goodInteraction != 0) and (time_goodInteraction + TIME_OUT_MA < time_loop)):
                 functions_main.send_uno_lights(arduino.ser1, "happy")  # rainbow lights
-                functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "none")  # small rotations left and right
-                # explaination of the activity
+                functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "startactivity")  # small rotations left and right & explaination of the activity
                 time_out_system_hum = 0
                 TOTSongsIdentified = 0
                 start_time_MA = time.time()
@@ -333,14 +332,12 @@ with suppress_stdout_stderr():
                             #functions_main.reproduce_song(MA_interactionLevel, 0)  # suona con me!
                         #if song == 2:
                         functions_main.send_uno_lights(arduino.ser1, "angry") # red lights
-                        functions_main.reproduce_song(MA_interactionLevel, 5)  # ora tocca a me!
-                        functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "none")  # small movements left and right
+                        functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "myturn")  # small movements left and right & ora tocca a me
                         #functions_main.send_initial_action_arduino("move", arduino.ser, "none")  # forth
                         functions_main.reproduce_song(ActivityLevel, song)  # reproducing the song
                         #if song == 1:
                         functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
-                        functions_main.reproduce_song(MA_interactionLevel, 4)  # tocca a te!
-                        functions_main.send_initial_action_arduino("backForth", arduino.ser, "none") #small backforth
+                        functions_main.send_initial_action_arduino("backForth", arduino.ser, "yourturn") #small backforth & ora tocca a te
                         #functions_main.send_initial_action_arduino("scared", arduino.ser, "none")  # back
                         # BEAT RECOGNITION
                         activity = AudioActivity()
@@ -368,27 +365,22 @@ with suppress_stdout_stderr():
                             if correctSong > 0:  # at least 1 song over 2 has been correctly reproduced by the child
                                 print("song well reproduced by the child")
                                 functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
-                                functions_main.reproduce_song(MA_interactionLevel, 2)  # wow evviva!
-                                functions_main.send_initial_action_arduino("happy", arduino.ser, "none")
+                                functions_main.send_initial_action_arduino("happy", arduino.ser, "bravo")
                                 child_not_involved = 0
                             else:
                                 print("the child did not reproduced the song well")
                                 functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
-                                functions_main.reproduce_action_sound("sad")
-                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "none")  # small movements left and right
+                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "wrong")  # small movements left and right
                                 functions_main.send_uno_lights(arduino.ser1, "excited_attract")  # random lights
-                                functions_main.reproduce_song(MA_interactionLevel, 7)  # dai gioca con me! or riproviamo
-                                functions_main.send_initial_action_arduino("backForth", arduino.ser, "none")  # small backforth
+                                functions_main.send_initial_action_arduino("backForth", arduino.ser, "again")  # small backforth & riproviamo
                             correctSong = 0
                         if (activity.sequence_identified == 0) and (activity.other_activity > 20 or activity.Nbeat < 3):
                             print("the child is not performing the activity")
                             functions_main.send_uno_lights(arduino.ser1, "sad") # blue lights
-                            functions_main.reproduce_action_sound("sad")
-                            functions_main.send_initial_action_arduino("openToRight", arduino.ser, "none") #back left
-                            functions_main.reproduce_song(MA_interactionLevel, 7)  # dai gioca con me :(
+                            functions_main.send_initial_action_arduino("openToRight", arduino.ser, "noplay") #back left & non giochi con me? :(
                             functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
                             functions_main.send_initial_action_arduino("openBackToLeft", arduino.ser, "none") #forth left
-                            functions_main.send_initial_action_arduino("backForth", arduino.ser, "none") #small backforth
+                            functions_main.send_initial_action_arduino("backForth", arduino.ser, "giochiamo") #small backforth
                             child_not_involved += 1
                             if child_not_involved > 4:
                                 print("the child doesn't want to play or didn't understand the activity")
@@ -403,29 +395,27 @@ with suppress_stdout_stderr():
                     if (song == NSongsinLevel):  # end of the level
                         if NSongIdentified >= ((NSongsinLevel - 1) // 2):  # 50% correct
                             print("yeeeeeeeeeeeeeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy ready fot the next level")
-                            functions_main.reproduce_song(MA_interactionLevel, 1)  # wow, bravo! reproduced when the level has been passed
-                            #hai superato il livello!!!
                             functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
-                            functions_main.send_initial_action_arduino("happy", arduino.ser, "none") #rotation on itself and back
-                            functions_main.reproduce_song(MA_interactionLevel, 6) # canta con me!
+                            functions_main.send_initial_action_arduino("happy", arduino.ser, "happy") #rotation on itself and back & evviva
+                            functions_main.reproduce_action_sound("sing") # canta con me!
                             functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
                             functions_main.reproduce_song(ActivityLevel, song) # long song
                             ActivityLevel += 1  # next level
                             try_again = 0
+                            functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "nextlevel") #small rotations left and right
                         else:
                             print("well well riproviamooo")
                             functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
-                            functions_main.reproduce_action_sound("sad")
-                            functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "none") #small movements left and right
+                            functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "wrong") #small movements left and right
                             functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
-                            functions_main.reproduce_song(MA_interactionLevel, 3)  # riproviamo?
-                            functions_main.send_initial_action_arduino("backForth", arduino.ser, "none") #small backforth
+                            functions_main.send_initial_action_arduino("backForth", arduino.ser, "again") #small backforth & riproviamo
                             try_again += 1
                             if try_again < 4:
                                 # if the child was not able to pass to the next level, the same will be reproposed
                                 Nid -= ((NSongsinLevel - 1) // 2)
                             else: # if the level has been proposed too many times, pass to the next level
                                 ActivityLevel += 1  # next level
+                                functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "nextlevel") #small rotations left and right
                         TOTSongsIdentified = TOTSongsIdentified + NSongIdentified
 
                     actual_time_MA = time.time()
@@ -434,8 +424,7 @@ with suppress_stdout_stderr():
                     print("Time MA: {:.1f}".format(duration_MA))  # the duration of each level of the activity
 
                 functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
-                # thank you for playing with me
-                functions_main.send_initial_action_arduino("happy", arduino.ser, "none") #rotation on itself and back
+                functions_main.send_initial_action_arduino("happy", arduino.ser, "finishactivity") #rotation on itself and back & thank you for playing with me
 
                 if duration_MA != 0:
                     now = datetime.now()
@@ -467,7 +456,7 @@ with suppress_stdout_stderr():
                         count = 4
                         if meanAngle >= 0:
                             tracking_a_user = functions_main.human_verification(meanAngle, arduino.old_user, count)  # it check if obstacle detected from sonar is a human
-                        elif soundDirection == "ECHO": # check which one of the angle detected corresponds to what the sonar found
+                        elif soundDirection == "ECHO": # check which one of the angle detected corresponds to what the sonar
                             tracking_a_user = functions_main.human_verification(angle, arduino.old_user, count) #it check if obstacle detected from sonar is a human
                             if tracking_a_user == False:
                                 tracking_a_user = functions_main.human_verification(previousAngle, arduino.old_user, count)  # it check if obstacle detected from sonar is a human
