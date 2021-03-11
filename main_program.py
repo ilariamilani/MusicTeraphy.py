@@ -374,10 +374,8 @@ with suppress_stdout_stderr():
                             else:
                                 print("the child did not reproduced the song well")
                                 functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
-                                functions_main.send_initial_action_arduino("scared", arduino.ser, "none")  # back
-                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "none")  # small movements left and right
                                 functions_main.reproduce_action_sound("sad")
-                                functions_main.send_initial_action_arduino("move", arduino.ser, "none")  # forth
+                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "none")  # small movements left and right
                                 functions_main.send_uno_lights(arduino.ser1, "excited_attract")  # random lights
                                 functions_main.reproduce_song(MA_interactionLevel, 7)  # dai gioca con me! or riproviamo
                                 functions_main.send_initial_action_arduino("backForth", arduino.ser, "none")  # small backforth
@@ -417,10 +415,8 @@ with suppress_stdout_stderr():
                         else:
                             print("well well riproviamooo")
                             functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
-                            functions_main.send_initial_action_arduino("scared", arduino.ser, "none") #back
-                            functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "none") #small movements left and right
                             functions_main.reproduce_action_sound("sad")
-                            functions_main.send_initial_action_arduino("move", arduino.ser, "none") #forth
+                            functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "none") #small movements left and right
                             functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
                             functions_main.reproduce_song(MA_interactionLevel, 3)  # riproviamo?
                             functions_main.send_initial_action_arduino("backForth", arduino.ser, "none") #small backforth
@@ -565,7 +561,7 @@ with suppress_stdout_stderr():
                     time_out_system_hum = 0
                 elif time_out_system_hum <= TIME_OUT_HUM and time_out_system<TIME_OUT and Finding_human == False:
                     if receiveAction and child_action == "object":
-                        functions_main.reproduce_action_sound("sad")
+                        functions_main.reproduce_action_sound("angry")
                         #reproduce ah sei un oggetto! dove sei?!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         functions_main.send_uno_lights(arduino.ser1, "rotateRight")
                         functions_main.send_initial_action_arduino("turnBack", arduino.ser, "none")
