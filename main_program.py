@@ -47,14 +47,17 @@ def on_press(key):
             child_action = "touch"
             MusicalActivity = False
             receiveAction = True
+            good_interaction = False
         elif key.char == ("s"):
             child_action = "push"
             MusicalActivity = False
             receiveAction = True
+            good_interaction = False
         elif key.char == ("d"):
             child_action = "hit"
             MusicalActivity = False
             receiveAction = True
+            good_interaction = False
         elif key.char == ("f"):
             child_action = "hug"
             MusicalActivity = False
@@ -64,14 +67,22 @@ def on_press(key):
             child_action = "strongHug"
             MusicalActivity = False
             receiveAction = True
+            good_interaction = False
         elif key.char == ("h"):
             child_action = "none"
             MusicalActivity = False
             receiveAction = True
+            good_interaction = False
         elif key.char == ("j"):
             child_action = "activity"
             MusicalActivity = False
             receiveAction = True
+            good_interaction = False
+        elif key.char == ("k"):
+            child_action = "object"
+            MusicalActivity = False
+            receiveAction = True
+            good_interaction = False
         else:
             child_action = child_action
     except AttributeError:
@@ -154,6 +165,8 @@ with suppress_stdout_stderr():
         tooCloseCount = 0
         tooFarCount = 0
         NSongIdentified = 0
+        correctSong = 0
+        try_again = 0
         waitingForSounds = 0
         NSongsinLevel = 7  # number of songs in a level
         MA_interactionLevel = 0  # contains the audios for interaction in MA
@@ -351,7 +364,8 @@ with suppress_stdout_stderr():
                         activity.stop()
                         #reaction of the robot to the 2 songs just performed
                         if (song % 2) == 0:
-                            if NSongIdentified > 0:  # at least 1 song over 2 has been correctly reproduced by the child
+                            correctSong = NSongIdentified
+                            if correctSong > 0:  # at least 1 song over 2 has been correctly reproduced by the child
                                 print("song well reproduced by the child")
                                 functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
                                 functions_main.reproduce_song(MA_interactionLevel, 2)  # wow evviva!
@@ -367,6 +381,7 @@ with suppress_stdout_stderr():
                                 functions_main.send_uno_lights(arduino.ser1, "excited_attract")  # random lights
                                 functions_main.reproduce_song(MA_interactionLevel, 7)  # dai gioca con me! or riproviamo
                                 functions_main.send_initial_action_arduino("backForth", arduino.ser, "none")  # small backforth
+                            correctSong = 0
                         if (activity.sequence_identified == 0) and (activity.other_activity > 20 or activity.Nbeat < 3):
                             print("the child is not performing the activity")
                             functions_main.send_uno_lights(arduino.ser1, "sad") # blue lights
@@ -398,6 +413,7 @@ with suppress_stdout_stderr():
                             functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
                             functions_main.reproduce_song(ActivityLevel, song) # long song
                             ActivityLevel += 1  # next level
+                            try_again = 0
                         else:
                             print("well well riproviamooo")
                             functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
@@ -408,8 +424,12 @@ with suppress_stdout_stderr():
                             functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
                             functions_main.reproduce_song(MA_interactionLevel, 3)  # riproviamo?
                             functions_main.send_initial_action_arduino("backForth", arduino.ser, "none") #small backforth
-                            # if the child was not able to pass to the next level, the same will be reproposed
-                            Nid -= ((NSongsinLevel - 1) // 2)
+                            try_again += 1
+                            if try_again < 4:
+                                # if the child was not able to pass to the next level, the same will be reproposed
+                                Nid -= ((NSongsinLevel - 1) // 2)
+                            else: # if the level has been proposed too many times, pass to the next level
+                                ActivityLevel += 1  # next level
                         TOTSongsIdentified = TOTSongsIdentified + NSongIdentified
 
                     actual_time_MA = time.time()
@@ -467,6 +487,7 @@ with suppress_stdout_stderr():
                             start_time_out_system_hum = time.time()
                             #THERE IS A HUMAN READY TO INTERACT WITH!
                             Finding_human = False
+                            #reproduce: ey ciao ti ho trovato!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         else: #if it finds an object that is not a human (angle sonar != angle BlueCoin), it must rotate until that obstacle is an human (in the angle s direction)
                             print("Object from sonar is not a human")
                             if (soundDirection == "FRONT" and arduino.new_dist > 150): #the human is in front of the robot and eventually right/left osbstacle are far
@@ -542,92 +563,102 @@ with suppress_stdout_stderr():
                     start_time_out_system = time.time()
                     time_out_system_hum = 0
                 elif time_out_system_hum <= TIME_OUT_HUM and time_out_system<TIME_OUT and Finding_human == False:
-                    print("INTERACTION LOOP - Preparing the interaction")
-                    #If there is a human interacting and i'm inside the timeout
-                    time_out_system = 0
-                    print("Distance from sonar = {:.1f}".format(arduino.new_dist))
-                    if arduino.new_dist > 120.0: #if the distance to the chld is bigger than , get closer
-                        tooCloseCount=0
-                        tooFarCount += 1
-                        if tooFarCount > 10:
-                            tooFarCount = 0
-                            if (soundDirection == "FRONT"): # if the voice is detected from the front or not detected because the child is too far
-                                print("INTERACTION LOOP - Child is far and in front ") #ADD and before was in front according to sonar or angle???
-                                functions_main.send_uno_lights(arduino.ser1, "move")
-                                functions_main.send_initial_action_arduino("move", arduino.ser, "move_find")
-                            elif (soundDirection == "RIGHT"):
-                                print("INTERACTION LOOP - Child is on the right ")
-                                functions_main.send_uno_lights(arduino.ser1, "rotateRight")
-                                functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
-                            elif (soundDirection == "LEFT"):
-                                print("INTERACTION LOOP - Child is on the left ")
-                                functions_main.send_uno_lights(arduino.ser1, "rotateLeft")
-                                functions_main.send_initial_action_arduino("rotateLeft", arduino.ser, "none")
-                            elif (soundDirection == "BACK"):
-                                print("INTERACTION LOOP - Child is on the back ")
-                                functions_main.send_uno_lights(arduino.ser1, "rotateRight")
-                                functions_main.send_initial_action_arduino("turnBack", arduino.ser, "none")
-                            elif ((soundDirection == "NONE") or (soundDirection == "ECHO")): #if no sounds perceived from BlueCoin
-                                if waitingForSounds < 3:
-                                     if waitingForSounds == 0: # dai fatti sentire!
-                                         functions_main.send_uno_lights(arduino.ser1, "excited_attract")
-                                         functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract")
-                                     waitingForSounds += 1
-                                else:  # if still no sounds it might be just an object I pretend the user if in front but too far for the BlueCoin to hear him
+                    if receiveAction and child_action == "object":
+                        #reproduce ah sei un oggetto! dove sei?!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        functions_main.send_uno_lights(arduino.ser1, "rotateRight")
+                        functions_main.send_initial_action_arduino("turnBack", arduino.ser, "none")
+                        print("INTERACTION LOOP - it is not a human, but an object")
+                        Finding_human = True  # Am i looking for a human?
+                        time_out_system = 0
+                        start_time_out_system = time.time()
+                        time_out_system_hum = 0
+                    else:
+                        print("INTERACTION LOOP - Preparing the interaction")
+                        #If there is a human interacting and i'm inside the timeout
+                        time_out_system = 0
+                        print("Distance from sonar = {:.1f}".format(arduino.new_dist))
+                        if arduino.new_dist > 120.0: #if the distance to the chld is bigger than , get closer
+                            tooCloseCount=0
+                            tooFarCount += 1
+                            if tooFarCount > 10:
+                                tooFarCount = 0
+                                if (soundDirection == "FRONT"): # if the voice is detected from the front or not detected because the child is too far
+                                    print("INTERACTION LOOP - Child is far and in front ") #ADD and before was in front according to sonar or angle???
                                     functions_main.send_uno_lights(arduino.ser1, "move")
                                     functions_main.send_initial_action_arduino("move", arduino.ser, "move_find")
-                                    waitingForSounds = 0
-                    elif arduino.new_dist < 40.0:
-                        tooCloseCount += 1
-                        tooFarCount = 0
-                        if tooCloseCount > 10: #If I'm too cloose for too much time ( I need this time window in order to let the children interact with the robot)
-                            print("INTERACTION LOOP - Too close")
-                            functions_main.send_uno_lights(arduino.ser1, "move")
-                            functions_main.send_initial_action_arduino("scared", arduino.ser, "move_find")
+                                elif (soundDirection == "RIGHT"):
+                                    print("INTERACTION LOOP - Child is on the right ")
+                                    functions_main.send_uno_lights(arduino.ser1, "rotateRight")
+                                    functions_main.send_initial_action_arduino("rotateRight", arduino.ser, "none")
+                                elif (soundDirection == "LEFT"):
+                                    print("INTERACTION LOOP - Child is on the left ")
+                                    functions_main.send_uno_lights(arduino.ser1, "rotateLeft")
+                                    functions_main.send_initial_action_arduino("rotateLeft", arduino.ser, "none")
+                                elif (soundDirection == "BACK"):
+                                    print("INTERACTION LOOP - Child is on the back ")
+                                    functions_main.send_uno_lights(arduino.ser1, "rotateRight")
+                                    functions_main.send_initial_action_arduino("turnBack", arduino.ser, "none")
+                                elif ((soundDirection == "NONE") or (soundDirection == "ECHO")): #if no sounds perceived from BlueCoin
+                                    if waitingForSounds < 3:
+                                         if waitingForSounds == 0: # dai fatti sentire!
+                                             functions_main.send_uno_lights(arduino.ser1, "excited_attract")
+                                             functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract")
+                                         waitingForSounds += 1
+                                    else:  # if still no sounds it might be just an object I pretend the user if in front but too far for the BlueCoin to hear him
+                                        functions_main.send_uno_lights(arduino.ser1, "move")
+                                        functions_main.send_initial_action_arduino("move", arduino.ser, "move_find")
+                                        waitingForSounds = 0
+                        elif arduino.new_dist < 40.0:
+                            tooCloseCount += 1
+                            tooFarCount = 0
+                            if tooCloseCount > 10: #If I'm too cloose for too much time ( I need this time window in order to let the children interact with the robot)
+                                print("INTERACTION LOOP - Too close")
+                                functions_main.send_uno_lights(arduino.ser1, "move")
+                                functions_main.send_initial_action_arduino("scared", arduino.ser, "move_find")
+                                tooCloseCount = 0
+                        else: #if it's closer than 1.5m perform the interaction loop normally and select action of the child (child_action)
+                            # Run Object Detection. I start now the timer for human time out because else comprehend no object sensed by the sonar
                             tooCloseCount = 0
-                    else: #if it's closer than 1.5m perform the interaction loop normally and select action of the child (child_action)
-                        # Run Object Detection. I start now the timer for human time out because else comprehend no object sensed by the sonar
-                        tooCloseCount = 0
-                        tooFarCount = 0
-                        current_time_out_system_hum = time.time()
-                        time_out_system_hum = time_out_system_hum+(current_time_out_system_hum-start_time_out_system_hum)
-                        start_time_out_system_hum = current_time_out_system_hum
-                        if (soundDirection == "FRONT"):
-                            time_out_system_hum = 0
-                        if (soundDirection == "RIGHT"):
-                            lookTo = "rotateRight"
-                            time_out_system_hum = time_out_system_hum + 22
-                        elif (soundDirection == "LEFT"):
-                            lookTo = "rotateLeft"
-                            time_out_system_hum = time_out_system_hum + 22
-                        elif (soundDirection == "BACK"):
-                            lookTo = "turnBack"
-                            time_out_system_hum = time_out_system_hum + 22
-                        print("INTERACTION LOOP - Correctly interacting, waiting to receive an action")
+                            tooFarCount = 0
+                            current_time_out_system_hum = time.time()
+                            time_out_system_hum = time_out_system_hum+(current_time_out_system_hum-start_time_out_system_hum)
+                            start_time_out_system_hum = current_time_out_system_hum
+                            if (soundDirection == "FRONT"):
+                                time_out_system_hum = 0
+                            if (soundDirection == "RIGHT"):
+                                lookTo = "rotateRight"
+                                time_out_system_hum = time_out_system_hum + 22
+                            elif (soundDirection == "LEFT"):
+                                lookTo = "rotateLeft"
+                                time_out_system_hum = time_out_system_hum + 22
+                            elif (soundDirection == "BACK"):
+                                lookTo = "turnBack"
+                                time_out_system_hum = time_out_system_hum + 22
+                            print("INTERACTION LOOP - Correctly interacting, waiting to receive an action")
 
-                        if firstTime:
-                            functions_main.send_uno_lights(arduino.ser1,"excited_attract")
-                            functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract")
-                            firstTime = False
-                        if receiveAction:
-                            if child_action != "activity":
-                                functions_main.decide_action(child_action) #decide robot behaviour based on action of the child and movement of the robot
-                                functions_main.send_uno_lights(arduino.ser1, functions_main.current_action)
-                                functions_main.send_initial_action_arduino( functions_main.current_action, arduino.ser, functions_main.current_action)
-                                receiveAction = False
-                                if good_interaction == True:
-                                    time_goodInteraction = time.time()
-                                    good_interaction = False
-                                else:
-                                    time_goodInteraction = 0
-                            else:
-                                MusicalActivity = True
-                                start_time_MA = time.time()
-                                duration_MA = 0
-                                receiveAction = False
+                            if firstTime:
+                                functions_main.send_uno_lights(arduino.ser1,"excited_attract")
+                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract")
+                                firstTime = False
+                            if receiveAction:
+                                if child_action != "activity" and child_action != "object":
+                                    functions_main.decide_action(child_action) #decide robot behaviour based on action of the child and movement of the robot
+                                    functions_main.send_uno_lights(arduino.ser1, functions_main.current_action)
+                                    functions_main.send_initial_action_arduino( functions_main.current_action, arduino.ser, functions_main.current_action)
+                                    receiveAction = False
+                                    if good_interaction == True:
+                                        time_goodInteraction = time.time()
+                                        good_interaction = False
+                                    else:
+                                        time_goodInteraction = 0
+                                elif child_action == "activity":
+                                    MusicalActivity = True
+                                    start_time_MA = time.time()
+                                    duration_MA = 0
+                                    receiveAction = False
 
-                        print("Child Action: " + child_action + " | " + "Robot Action: " + functions_main.current_action)
-                    print("Time Out Human {:.1f} / 10 Sec".format(time_out_system_hum) )
+                            print("Child Action: " + child_action + " | " + "Robot Action: " + functions_main.current_action)
+                        print("Time Out Human {:.1f} / 10 Sec".format(time_out_system_hum) )
                 elif Finding_human == True and time_out_system < TIME_OUT : #if i need to find the child and i'm inside the timout
                     print("INTERACTION LOOP - Looking for a human")
                     #I need to find the human. I start counting for the general TIME_OUT

@@ -156,7 +156,7 @@ def reproduce_song(level, Nsong):
             PlayAudio().play("sounds/opopop.wav")
         elif (Nsong == 7):
             PlayAudio().play("sounds/founding.wav")
-            #PlayAudio().play("sounds/44Gatti.wav.wav")
+            #PlayAudio().play("sounds/44Gatti.wav")
     elif (level == 2):
         if (Nsong == 0):
             PlayAudio().play("sounds/AttentiallaMusica2.wav")
