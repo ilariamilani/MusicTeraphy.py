@@ -7,7 +7,6 @@ import time
 import subprocess
 from datetime import datetime
 from AudioActivity import AudioActivity
-from audioplayer import PlayAudio
 from pynput import keyboard
 import functions_main
 import connections_arduinos as arduino #new_user_fun
@@ -326,10 +325,6 @@ with suppress_stdout_stderr():
                         if song == NSongsinLevel:
                             print("end of level")
                             break
-                        #if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
-                            #new song!
-                            #functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
-                            #functions_main.reproduce_song(MA_interactionLevel, 0)  # suona con me!
                         functions_main.send_uno_lights(arduino.ser1, "angry") # red lights
                         functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "myturn")  # small movements left and right & ora tocca a me
                         #functions_main.send_initial_action_arduino("move", arduino.ser, "none")  # forth
@@ -337,6 +332,9 @@ with suppress_stdout_stderr():
                         functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
                         functions_main.send_initial_action_arduino("backForth", arduino.ser, "yourturn") #small backforth & ora tocca a te
                         #functions_main.send_initial_action_arduino("scared", arduino.ser, "none")  # back
+                        #if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
+                        if song == 1: #before every firts song of the level
+                            functions_main.reproduce_action_sound("play") # suona con me! batti a tempo
                         # BEAT RECOGNITION
                         activity = AudioActivity()
                         activity.start(id=Nid)

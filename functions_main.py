@@ -1,6 +1,7 @@
-import serial
+#import serial
+#from subprocess import run
+
 import random
-from subprocess import run
 from audioplayer import PlayAudio
 
 previous_action = "none"
@@ -10,7 +11,7 @@ current_action = "none"
 
 bravo = ["audioYolk/bravissimo.wav", "audioYolk/wowchebravo.wav", "audioYolk/ohchebello.wav", "audioYolk/evviva.wav"]
 riprova = ["audioYolk/riproviamo.wav", "audioYolk/dairiprova.wav", "audioYolk/daidinuovo.wav", "audioYolk/provaancora.wav"]
-suona = ["audioYolk/battiatempo.wav", "audioYolk/suonaaritmo.wav", "audioYolk/daivaiatempo.wav", ]
+suona = ["audioYolk/battiatempo.wav", "audioYolk/suonaaritmo.wav", "audioYolk/daivaiatempo.wav"]
 canta = ["audioYolk/cantaconme.wav", "audioYolk/cantiamo.wav"]
 pain = ["audioYolk/ahiachemale.wav", "audioYolk/ahiabasta.wav", "audioYolk/mifaimale.wav"]
 angry = ["audioYolk/basta.wav", "audioYolk/nomaestra.wav", "audioYolk/bastacattivo.wav", "audioYolk/noooo.wav"]
@@ -73,12 +74,32 @@ def send_initial_action_arduino(action, ser, sound):
 
 def reproduce_action_sound(action):
     if(action!="none" and action!="move_find"):
+        #AUDIO for EMOTIONS
         if(action == "excited"):
             audio = random.choice(giochiamo)
             PlayAudio().play(audio)
         elif(action == "sad"):
             audio = random.choice(sad)
             PlayAudio().play(audio)
+        elif (action == "excited_attract"):
+            audio = random.choice(happy)
+            PlayAudio().play(audio)
+        elif (action == "interested_excited"):
+            audio = random.choice(giochiamo)
+            PlayAudio().play(audio)
+        elif (action == "happy"):  # after receiving a hug
+            audio = random.choice(happy)
+            PlayAudio().play(audio)
+        elif (action == "very_scared"):
+            audio = random.choice(pain)
+            PlayAudio().play(audio)
+        elif (action == "scared"):
+            audio = random.choice(pain)
+            PlayAudio().play(audio)
+        elif (action == "angry"):
+            audio = random.choice(angry)
+            PlayAudio().play(audio)
+        #AUDIO to FIND the CHILD
         #elif(action == "out"):
             #PlayAudio().play("sounds/Playful_R2D2.wav")
         elif(action == "found"): #robot identifies the user in front of it, ready to interact
@@ -92,24 +113,7 @@ def reproduce_action_sound(action):
             PlayAudio().play(audio)
         elif(action == "move"):
             PlayAudio().play("sounds/fordward.wav")
-        elif(action == "excited_attract"):
-            audio = random.choice(happy)
-            PlayAudio().play(audio)
-        elif(action == "interested_excited"):
-            audio = random.choice(giochiamo)
-            PlayAudio().play(audio)
-        elif(action == "happy"): #after receiving a hug
-            audio = random.choice(happy)
-            PlayAudio().play(audio)
-        elif(action == "very_scared"):
-            audio = random.choice(pain)
-            PlayAudio().play(audio)
-        elif(action == "scared"):
-            audio = random.choice(pain)
-            PlayAudio().play(audio)
-        elif(action == "angry"):
-            audio = random.choice(angry)
-            PlayAudio().play(audio)
+        # AUDIO for MUSICAL ACTIVITY
         elif (action == "good"):
             audio = random.choice(bravo)
             PlayAudio().play(audio)
