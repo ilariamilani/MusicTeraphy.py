@@ -7,24 +7,24 @@ previous_action = "none"
 next_action = "none"
 state_user = ""
 current_action = "none"
-audio_list = ["sounds/Evviva.wav", "sounds/wow.wav", "sounds/SuonaConMe.wav", "sounds/CheBravo.wav"]
-bravo = []
-wrong = []
-riprova = []
-suona = []
-canta = []
-pain = []
-angry = []
-sad = []
-happy = []
-found = []
-object = []
-dovesei = []
-giochiamo = []
-myturn = []
-yourturn = []
-nongioca = []
-nextlevel = []
+
+bravo = ["audioYolk/bravissimo.wav", "audioYolk/wowchebravo.wav", "audioYolk/ohchebello.wav", "audioYolk/evviva.wav"]
+riprova = ["audioYolk/riproviamo.wav", "audioYolk/dairiprova.wav", "audioYolk/daidinuovo.wav", "audioYolk/provaancora.wav"]
+suona = ["audioYolk/battiatempo.wav", "audioYolk/suonaaritmo.wav", "audioYolk/daivaiatempo.wav", ]
+canta = ["audioYolk/cantaconme.wav", "audioYolk/cantiamo.wav"]
+pain = ["audioYolk/ahiachemale.wav", "audioYolk/ahiabasta.wav", "audioYolk/mifaimale.wav"]
+angry = ["audioYolk/basta.wav", "audioYolk/nomaestra.wav", "audioYolk/bastacattivo.wav", "audioYolk/noooo.wav"]
+sad = ["audioYolk/oooouuuuu.wav", "audioYolk/uuuuuhhhhhh.wav", "audioYolk/nodai.wav"]
+happy = ["audioYolk/ohchebello.wav", "audioYolk/wowsonofelice.wav", "audioYolk/evviva.wav"]
+found = ["audioYolk/eccoti.wav", "audioYolk/eccotigiochiamo.wav", "audioYolk/ohwowseiqui.wav", "audioYolk/seiqui.wav", "audioYolk/tihotrovatogiocaconme.wav"]
+notfound = ["audioYolk/ahnonseitudovesei.wav", "audioYolk/ahnonseitudoveseifattisentire.wav", "audioYolk/ohnomaeunoggettodovesei.wav", "audioYolk/ahnonontitrovo.wav"]
+dovesei = ["audioYolk/doveseifunny.wav", "audioYolk/dovesei.wav", "audioYolk/doveseigiochiamo.wav", "audioYolk/fattisentirefunny.wav", "audioYolk/fattisentire.wav", "audioYolk/doveseigiochiamofunny.wav", "audioYolk/ehiciseifunny.wav", "audioYolk/ehicisei.wav", "audioYolk/ehiciseifunny2.wav"]
+giochiamo = ["audioYolk/giocaconme.wav", "audioYolk/giochiamo.wav", "audioYolk/vuoigiocareconme.wav", "audioYolk/giochiamoinsieme.wav"]
+myturn = ["audioYolk/oraascolta.wav", "audioYolk/oratoccaame.wav"]
+yourturn = ["audioYolk/oratoccaate.wav", "audioYolk/adessosuonatu.wav", "audioYolk/oraprovatu.wav", "audioYolk/toccaate.wav", "audioYolk/provatu.wav"]
+nongioca = ["audioYolk/nonvuoigiocareconme.wav", "audioYolk/nontipiacequestogioco.wav", "audioYolk/nonsuoniconme.wav"]
+nextlevel = ["audioYolk/prontoperilprossimolivello.wav", "audioYolk/orasaraunpopiudifficile.wav"]
+
 
 def human_verification(angle_mean, user, count): #return if the object detected by sonar is a human
     #print("angle: " + str(angle_mean)+", User:" + user)
@@ -81,18 +81,18 @@ def reproduce_action_sound(action):
             PlayAudio().play(audio)
         #elif(action == "out"):
             #PlayAudio().play("sounds/Playful_R2D2.wav")
-        elif(action == "found"):
+        elif(action == "found"): #robot identifies the user in front of it, ready to interact
             audio = random.choice(found)
             PlayAudio().play(audio)
         elif (action == "where"):
             audio = random.choice(dovesei)
             PlayAudio().play(audio)
-        elif (action == "object"):
-            audio = random.choice(object)
+        elif (action == "notfound"):
+            audio = random.choice(notfound)
             PlayAudio().play(audio)
-        #elif(action == "move"):
-            #PlayAudio().play("sounds/fordward.wav")
-        elif(action == "excited_attract"): #robot identifies the user in front of it, ready to interact
+        elif(action == "move"):
+            PlayAudio().play("sounds/fordward.wav")
+        elif(action == "excited_attract"):
             audio = random.choice(happy)
             PlayAudio().play(audio)
         elif(action == "interested_excited"):
@@ -131,17 +131,17 @@ def reproduce_action_sound(action):
         elif (action == "noplay"):
             audio = random.choice(nongioca)
             PlayAudio().play(audio)
-        elif (action == "wrong"):
-            audio = random.choice(wrong)
-            PlayAudio().play(audio)
         elif (action == "nextlevel"):
             audio = random.choice(nextlevel)
             PlayAudio().play(audio)
         elif (action == "startactivity"):
-            PlayAudio().play("hithere/.wav")
+            PlayAudio().play("audioYolk/introgioco.wav")
         elif (action == "finishactivity"):
-            PlayAudio().play("byebye/.wav")
-            
+            PlayAudio().play("audioYolk/grazieperavergiocatoconme.wav")
+            PlayAudio().play("audioYolk/ciaociao.wav")
+        elif (action == "terminate"):
+            PlayAudio().play("audioYolk/ciaociao.wav")
+
 def decide_action(action):
     global previous_action
     global current_action

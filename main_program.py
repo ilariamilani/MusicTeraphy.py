@@ -79,7 +79,7 @@ def on_press(key):
             receiveAction = True
             good_interaction = False
         elif key.char == ("k"):
-            child_action = "object"
+            child_action = "notfound" # if the robot identifies the child in an object
             MusicalActivity = False
             receiveAction = True
             good_interaction = False
@@ -330,12 +330,10 @@ with suppress_stdout_stderr():
                             #new song!
                             #functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
                             #functions_main.reproduce_song(MA_interactionLevel, 0)  # suona con me!
-                        #if song == 2:
                         functions_main.send_uno_lights(arduino.ser1, "angry") # red lights
                         functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "myturn")  # small movements left and right & ora tocca a me
                         #functions_main.send_initial_action_arduino("move", arduino.ser, "none")  # forth
                         functions_main.reproduce_song(ActivityLevel, song)  # reproducing the song
-                        #if song == 1:
                         functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
                         functions_main.send_initial_action_arduino("backForth", arduino.ser, "yourturn") #small backforth & ora tocca a te
                         #functions_main.send_initial_action_arduino("scared", arduino.ser, "none")  # back
@@ -349,7 +347,7 @@ with suppress_stdout_stderr():
                         while ((activity.elapsed_time < answerTime or activity.silence < 15) and activity.elapsed_time < TIME_OUT_song): #wait in case the child is still playing (making noises)
                             time.sleep(1.0)
                             if activity.sequence_identified > 0:
-                                print("Bravoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
+                                print("Bravoooo - Song correctly reproduced")
                                 functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
                                 NSongIdentified += 1
                                 time.sleep(1.0)
@@ -365,26 +363,26 @@ with suppress_stdout_stderr():
                             if correctSong > 0:  # at least 1 song over 2 has been correctly reproduced by the child
                                 print("song well reproduced by the child")
                                 functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
-                                functions_main.send_initial_action_arduino("happy", arduino.ser, "bravo")
+                                functions_main.send_initial_action_arduino("happy", arduino.ser, "good")
                                 child_not_involved = 0
                             else:
                                 print("the child did not reproduced the song well")
                                 functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
-                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "wrong")  # small movements left and right
+                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "again")  # small movements left and right & riproviamo
                                 functions_main.send_uno_lights(arduino.ser1, "excited_attract")  # random lights
-                                functions_main.send_initial_action_arduino("backForth", arduino.ser, "again")  # small backforth & riproviamo
                             correctSong = 0
                         if (activity.sequence_identified == 0) and (activity.other_activity > 20 or activity.Nbeat < 3):
                             print("the child is not performing the activity")
                             functions_main.send_uno_lights(arduino.ser1, "sad") # blue lights
                             functions_main.send_initial_action_arduino("openToRight", arduino.ser, "noplay") #back left & non giochi con me? :(
-                            functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
                             functions_main.send_initial_action_arduino("openBackToLeft", arduino.ser, "none") #forth left
+                            functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
                             functions_main.send_initial_action_arduino("backForth", arduino.ser, "giochiamo") #small backforth
                             child_not_involved += 1
                             if child_not_involved > 4:
                                 print("the child doesn't want to play or didn't understand the activity")
                                 print("Terminating the program")  # unless I receive an action from the child
+                                functions_main.reproduce_action_sound("terminate")  # ciao ciao!
                                 child_action = "QUIT"
                                 break
                         print("next song in the same level")
@@ -394,7 +392,7 @@ with suppress_stdout_stderr():
                     # LEVEL CONCLUDED: checking for results. if 50% of the activity is correct: next level. else: repeat the level
                     if (song == NSongsinLevel):  # end of the level
                         if NSongIdentified >= ((NSongsinLevel - 1) // 2):  # 50% correct
-                            print("yeeeeeeeeeeeeeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy ready fot the next level")
+                            print("yeeeyyy ready fot the next level")
                             functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
                             functions_main.send_initial_action_arduino("happy", arduino.ser, "happy") #rotation on itself and back & evviva
                             functions_main.reproduce_action_sound("sing") # canta con me!
@@ -404,11 +402,10 @@ with suppress_stdout_stderr():
                             try_again = 0
                             functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "nextlevel") #small rotations left and right
                         else:
-                            print("well well riproviamooo")
+                            print("well well riproviamo?")
                             functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
-                            functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "wrong") #small movements left and right
+                            functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "again") #small movements left and right & riproviamo
                             functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
-                            functions_main.send_initial_action_arduino("backForth", arduino.ser, "again") #small backforth & riproviamo
                             try_again += 1
                             if try_again < 4:
                                 # if the child was not able to pass to the next level, the same will be reproposed
@@ -446,6 +443,7 @@ with suppress_stdout_stderr():
                 if receiveAction != True:
                     print("Terminating the program") #unless I receive an action from the child
                     child_action = "QUIT"
+                    MusicalActivity = False
 
             if interaction != 2 and not MusicalActivity: #If I'm not interacting with the human
                 print("Interaction != 2, I'm not interacting with the human")
@@ -473,7 +471,7 @@ with suppress_stdout_stderr():
                             #THERE IS A HUMAN READY TO INTERACT WITH!
                             Finding_human = False
                             functions_main.send_uno_lights(arduino.ser1, "excited_attract")
-                            functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract") #reproduce: ey ciao ti ho trovato!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                            functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "found") #ey ciao ti ho trovato
                         else: #if it finds an object that is not a human (angle sonar != angle BlueCoin), it must rotate until that obstacle is an human (in the angle s direction)
                             print("Object from sonar is not a human")
                             if (soundDirection == "FRONT" and arduino.new_dist > 150): #the human is in front of the robot and eventually right/left osbstacle are far
@@ -499,10 +497,10 @@ with suppress_stdout_stderr():
                             functions_main.send_initial_action_arduino("move", arduino.ser, "move_find")
                             print("Is the user too far?")
                         else: #the user might be in front of the robot but silent, encourage to make sounds and wait
-                            if waitingForSounds < 8:
-                                if waitingForSounds == 0: # dai fatti sentire!
+                            if waitingForSounds < 4:
+                                if waitingForSounds == 2:
                                     functions_main.send_uno_lights(arduino.ser1, "excited_attract")
-                                    functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract")
+                                    functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "where") # dove sei? dai fatti sentire!
                                 waitingForSounds += 1
                             else: #if still no sounds it might be just an object
                                 functions_main.send_uno_lights(arduino.ser1, "rotateRight")
@@ -530,10 +528,10 @@ with suppress_stdout_stderr():
                             functions_main.send_uno_lights(arduino.ser1, "rotateRight")
                             functions_main.send_initial_action_arduino("turnBack", arduino.ser, "none")
                     else: #if there is no human: no sounds perceived from BlueCoin
-                        if waitingForSounds < 8:
-                            if waitingForSounds == 0: # dai fatti sentire!
+                        if waitingForSounds < 4:
+                            if waitingForSounds == 2: # dai fatti sentire!
                                 functions_main.send_uno_lights(arduino.ser1, "excited_attract")
-                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract")
+                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "where") # dove sei? dai fatti sentire!
                             waitingForSounds += 1
                         else:  # if still no sounds it might be just an object
                             functions_main.send_uno_lights(arduino.ser1, "rotateRight")
@@ -549,12 +547,11 @@ with suppress_stdout_stderr():
                     start_time_out_system = time.time()
                     time_out_system_hum = 0
                 elif time_out_system_hum <= TIME_OUT_HUM and time_out_system<TIME_OUT and Finding_human == False:
-                    if receiveAction and child_action == "object":
-                        functions_main.reproduce_action_sound("angry")
-                        #reproduce ah sei un oggetto! dove sei?!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        functions_main.send_uno_lights(arduino.ser1, "rotateRight")
-                        functions_main.send_initial_action_arduino("turnBack", arduino.ser, "none")
+                    if receiveAction and child_action == "notfound":
+                        functions_main.send_uno_lights(arduino.ser1, "angry")
+                        functions_main.send_initial_action_arduino("turnBack", arduino.ser, "notfound") # ah sei un oggetto! dove sei?
                         print("INTERACTION LOOP - it is not a human, but an object")
+                        functions_main.send_uno_lights(arduino.ser1, "excited_attract")
                         Finding_human = True  # Am i looking for a human?
                         time_out_system = 0
                         start_time_out_system = time.time()
@@ -588,10 +585,10 @@ with suppress_stdout_stderr():
                                     functions_main.send_uno_lights(arduino.ser1, "rotateRight")
                                     functions_main.send_initial_action_arduino("turnBack", arduino.ser, "none")
                                 elif ((soundDirection == "NONE") or (soundDirection == "ECHO")): #if no sounds perceived from BlueCoin
-                                    if waitingForSounds < 3:
-                                         if waitingForSounds == 0: # dai fatti sentire!
+                                    if waitingForSounds < 4:
+                                         if waitingForSounds == 2:
                                              functions_main.send_uno_lights(arduino.ser1, "excited_attract")
-                                             functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract")
+                                             functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "where") # dove sei? dai fatti sentire!
                                          waitingForSounds += 1
                                     else:  # if still no sounds it might be just an object I pretend the user if in front but too far for the BlueCoin to hear him
                                         functions_main.send_uno_lights(arduino.ser1, "move")
@@ -622,15 +619,15 @@ with suppress_stdout_stderr():
                                 time_out_system_hum = time_out_system_hum + 22
                             elif (soundDirection == "BACK"):
                                 lookTo = "turnBack"
-                                time_out_system_hum = time_out_system_hum + 22
+                                time_out_system_hum = time_out_system_hum + 18 # might have been echo
                             print("INTERACTION LOOP - Correctly interacting, waiting to receive an action")
 
                             if firstTime:
                                 functions_main.send_uno_lights(arduino.ser1,"excited_attract")
-                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract")
+                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "interested_excited") #giochiamo?
                                 firstTime = False
                             if receiveAction:
-                                if child_action != "activity" and child_action != "object":
+                                if child_action != "activity" and child_action != "notfound":
                                     functions_main.decide_action(child_action) #decide robot behaviour based on action of the child and movement of the robot
                                     functions_main.send_uno_lights(arduino.ser1, functions_main.current_action)
                                     functions_main.send_initial_action_arduino( functions_main.current_action, arduino.ser, functions_main.current_action)
@@ -661,7 +658,7 @@ with suppress_stdout_stderr():
                         print("INTERACTION LOOP - Human detected in the FOV")
                         Finding_human = False
                         functions_main.send_uno_lights(arduino.ser1, "excited_attract")
-                        functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited_attract")
+                        functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "where")
                         time_out_system_hum = 0
                         time_out_system = 0
                     else:
@@ -684,6 +681,7 @@ with suppress_stdout_stderr():
 
             if child_action == "QUIT": # it saves the duration of the activity and the number of songs correctly reproduced by the child
                 functions_main.send_uno_lights(arduino.ser1, "none")
+                functions_main.reproduce_action_sound("terminate")  # ciao ciao!
                 if duration_MA != 0 and NSongIdentified != 0:
                     now = datetime.now()
                     dt_string = now.strftime("%d/%m/%y %H:%M:%S")
