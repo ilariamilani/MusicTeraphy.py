@@ -169,8 +169,10 @@ with suppress_stdout_stderr():
         waitingForSounds = 0
         NSongsinLevel = 7  # number of songs in a level
         MA_interactionLevel = 0  # contains the audios for interaction in MA
-        answerTime = 9.0 # minimum time given to reproduce a song
-        TIME_OUT_song = 12.0 # maximum time given to reproduce a song
+        AnswerTime = 9.0 # minimum time given to reproduce a song
+        TIME_OUT_SONG = 12.0 # maximum time given to reproduce a song
+        answerTime = 0
+        TIME_OUT_song = 0
         TIME_OUT_MA = 9.0
         time_end_MA = 0
         angle_acquisition = 0
@@ -315,11 +317,11 @@ with suppress_stdout_stderr():
                     functions_main.reproduce_song(ActivityLevel, song)  # Attenti alla musica!
                     NSongIdentified = 0
                     if ActivityLevel == 1:
-                        answerTime -= 3.0
-                        TIME_OUT_song -= 3.0
+                        answerTime = AnswerTime - 3.0
+                        TIME_OUT_song = TIME_OUT_SONG - 3.0
                     elif ActivityLevel == 2:
-                        answerTime += 3.0
-                        TIME_OUT_song += 3.0
+                        answerTime = AnswerTime
+                        TIME_OUT_song = TIME_OUT_SONG
                     while song < NSongsinLevel:
                         song += 1
                         if song == NSongsinLevel:
@@ -342,6 +344,7 @@ with suppress_stdout_stderr():
                         print(Nid)
                         if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
                             Nid += 1
+                            correctSong = 0
                         while ((activity.elapsed_time < answerTime or activity.silence < 15) and activity.elapsed_time < TIME_OUT_song): #wait in case the child is still playing (making noises)
                             time.sleep(1.0)
                             if activity.sequence_identified > 0:
@@ -356,19 +359,7 @@ with suppress_stdout_stderr():
                                 continue
                         activity.stop()
                         #reaction of the robot to the 2 songs just performed
-                        if (song % 2) == 0:
-                            correctSong = NSongIdentified
-                            if correctSong > 0:  # at least 1 song over 2 has been correctly reproduced by the child
-                                print("song well reproduced by the child")
-                                functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
-                                functions_main.send_initial_action_arduino("happy", arduino.ser, "good")
-                                child_not_involved = 0
-                            else:
-                                print("the child did not reproduced the song well")
-                                functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
-                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "again")  # small movements left and right & riproviamo
-                                functions_main.send_uno_lights(arduino.ser1, "excited_attract")  # random lights
-                            correctSong = 0
+                        correctSong = correctSong + activity.sequence_identified
                         if (activity.sequence_identified == 0) and (activity.other_activity > 20 or activity.Nbeat < 3):
                             print("the child is not performing the activity")
                             functions_main.send_uno_lights(arduino.ser1, "sad") # blue lights
@@ -383,6 +374,17 @@ with suppress_stdout_stderr():
                                 functions_main.reproduce_action_sound("terminate")  # ciao ciao!
                                 child_action = "QUIT"
                                 break
+                        elif activity.sequence_identified > 0: # song correctly reproduced
+                            print("song well reproduced by the child")
+                            functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
+                            functions_main.send_initial_action_arduino("happy", arduino.ser, "good")
+                            child_not_involved = 0
+                        else:
+                            if (song % 2) == 0 and correctSong < 1:  # if not even 1 song over 2 has been correctly reproduced
+                                print("the child did not reproduced the song well")
+                                functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
+                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "again")  # small movements left and right & riproviamo
+                                functions_main.send_uno_lights(arduino.ser1, "excited_attract")  # random lights
                         print("next song in the same level")
                         activity.sequence_identified = 0
                     if child_action == "QUIT":
@@ -398,7 +400,8 @@ with suppress_stdout_stderr():
                             functions_main.reproduce_song(ActivityLevel, song) # long song
                             ActivityLevel += 1  # next level
                             try_again = 0
-                            functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "nextlevel") #small rotations left and right
+                            if ActivityLevel < 4:
+                                functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "nextlevel") #small rotations left and right
                         else:
                             print("well well riproviamo?")
                             functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
@@ -410,7 +413,8 @@ with suppress_stdout_stderr():
                                 Nid -= ((NSongsinLevel - 1) // 2)
                             else: # if the level has been proposed too many times, pass to the next level
                                 ActivityLevel += 1  # next level
-                                functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "nextlevel") #small rotations left and right
+                                if ActivityLevel < 4:
+                                    functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "nextlevel") #small rotations left and right
                         TOTSongsIdentified = TOTSongsIdentified + NSongIdentified
 
                     actual_time_MA = time.time()
