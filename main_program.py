@@ -453,7 +453,7 @@ with suppress_stdout_stderr():
 
             if interaction != 2 and not MusicalActivity: #If I'm not interacting with the human
                 print("Interaction != 2, I'm not interacting with the human")
-                if arduino.old_user != "none": #if an object is detected by the sonar, check if it is a human
+                if arduino.old_user != "none" and arduino.new_dist < 110.0: #if an object is detected by the sonar, and it is closer than x, check if it is a human
                     print("Object detected by sonars")
                     if ((meanAngle >= 0) or (soundDirection == "ECHO")):  # voice detected by BlueCoin
                         print("Human detected in the FOV")
@@ -514,6 +514,7 @@ with suppress_stdout_stderr():
                                 waitingForSounds = 0
                     print("No object close")
                 else:   #if no object detected from sonar
+                    # ASK TO GET CLOSER
                     if meanAngle >= 0: #there is a human in the FOV of robot. angle detected from BlueCloin
                         print("No object, but human in the FOV")
                         interaction = 1
