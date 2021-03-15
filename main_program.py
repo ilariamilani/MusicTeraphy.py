@@ -290,7 +290,7 @@ with suppress_stdout_stderr():
                    soundDirection = "RIGHT"
                elif ((meanAngle >= 45) and (meanAngle <= 160)): # sounds from the left
                    soundDirection = "LEFT"
-               elif (((meanAngle >= 315) and (meanAngle <= 45))): # sounds from the back
+               elif (((meanAngle >= 315) or (meanAngle <= 45))): # sounds from the back
                    soundDirection = "BACK"
 
             if ((echo == 1) or (meanAngle >= 0)):
