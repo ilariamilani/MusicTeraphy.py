@@ -164,7 +164,7 @@ with suppress_stdout_stderr():
         tooCloseCount = 0
         tooFarCount = 0
         NSongIdentified = 0
-        correctSong = 0
+        #correctSong = 0
         try_again = 0
         waitingForSounds = 0
         NSongsinLevel = 7  # number of songs in a level
@@ -231,7 +231,6 @@ with suppress_stdout_stderr():
                         meanAngle = (previousAngle + prevpreviousAngle) // 2
                     elif ((previousAngle <= 45) or (previousAngle >= 315)) and ((prevpreviousAngle <= 45) or (prevpreviousAngle >= 315)): #if back
                         meanAngle = 1 #random number on the back
-                        soundDirection = "BACK"
                     else:
                         echo = 1
                         soundDirection = "ECHO"
@@ -247,7 +246,6 @@ with suppress_stdout_stderr():
                         meanAngle = (angle + previousAngle + prevpreviousAngle) // 3
                     elif ((angle <= 45) or (angle >= 315)) and ((previousAngle <= 45) or (previousAngle >= 315)) and  ((prevpreviousAngle <= 45) or (prevpreviousAngle >= 315)): #if back
                         meanAngle = 1 #random number on the back
-                        soundDirection = "BACK"
                     else:
                         echo = 1
                         soundDirection = "ECHO"
@@ -258,7 +256,6 @@ with suppress_stdout_stderr():
                         meanAngle = (previousAngle + angle) // 2
                     elif ((previousAngle <= 45) or (previousAngle >= 315)) and ((angle <= 45) or (angle >= 315)): #if back
                         meanAngle = 1 #random number on the back
-                        soundDirection = "BACK"
                     else:
                         echo = 1
                         soundDirection = "ECHO"
@@ -269,7 +266,6 @@ with suppress_stdout_stderr():
                         meanAngle = (angle + prevpreviousAngle) // 2
                     elif ((prevpreviousAngle <= 45) or (prevpreviousAngle >= 315)) and ((angle <= 45) or (angle >= 315)): #if back
                         meanAngle = 1 #random number on the back
-                        soundDirection = "BACK"
                     else:
                         echo = 1
                         soundDirection = "ECHO"
@@ -284,11 +280,11 @@ with suppress_stdout_stderr():
             print("meanAngle: {:.1f}".format(meanAngle))
 
             if ((echo == 0) and (meanAngle >= 0)):
-               if ((meanAngle >= 160 ) and (meanAngle <= 200)): # sounds from the front
+               if ((meanAngle >= 170 ) and (meanAngle <= 190)): # sounds from the front
                    soundDirection = "FRONT"
-               elif ((meanAngle >= 200) and (meanAngle <= 315)): # sounds from the right
+               elif ((meanAngle >= 190) and (meanAngle <= 315)): # sounds from the right
                    soundDirection = "RIGHT"
-               elif ((meanAngle >= 45) and (meanAngle <= 160)): # sounds from the left
+               elif ((meanAngle >= 45) and (meanAngle <= 170)): # sounds from the left
                    soundDirection = "LEFT"
                elif (((meanAngle >= 315) or (meanAngle <= 45))): # sounds from the back
                    soundDirection = "BACK"
@@ -350,7 +346,7 @@ with suppress_stdout_stderr():
                         print(Nid)
                         if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
                             Nid += 1
-                            correctSong = 0
+                            #correctSong = 0
                         while ((activity.elapsed_time < answerTime or activity.silence < 15) and activity.elapsed_time < TIME_OUT_song): #wait in case the child is still playing (making noises)
                             time.sleep(1.0)
                             if activity.sequence_identified > 0:
@@ -365,7 +361,7 @@ with suppress_stdout_stderr():
                                 continue
                         activity.stop()
                         #reaction of the robot to the 2 songs just performed
-                        correctSong = correctSong + activity.sequence_identified
+                        #correctSong = correctSong + activity.sequence_identified
                         if (activity.sequence_identified == 0) and (activity.other_activity > 20 or activity.Nbeat < 3):
                             print("the child is not performing the activity")
                             functions_main.send_uno_lights(arduino.ser1, "sad") # blue lights
@@ -386,11 +382,11 @@ with suppress_stdout_stderr():
                             functions_main.send_initial_action_arduino("happy", arduino.ser, "good")
                             child_not_involved = 0
                         else:
-                            if (song % 2) == 0 and correctSong < 1:  # if not even 1 song over 2 has been correctly reproduced
-                                print("the child did not reproduced the song well")
-                                functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
-                                functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "again")  # small movements left and right & riproviamo
-                                functions_main.send_uno_lights(arduino.ser1, "excited_attract")  # random lights
+                            #if (song % 2) == 0 and correctSong < 1:  # if not even 1 song over 2 has been correctly reproduced
+                            print("the child did not reproduced the song well")
+                            functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
+                            functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "again")  # small movements left and right & riproviamo
+                            functions_main.send_uno_lights(arduino.ser1, "excited_attract")  # random lights
                         print("next song in the same level")
                         activity.sequence_identified = 0
                     if child_action == "QUIT":
@@ -410,6 +406,7 @@ with suppress_stdout_stderr():
                                 functions_main.send_initial_action_arduino("interested_excited", arduino.ser, "nextlevel") #small rotations left and right
                         else:
                             print("well well riproviamo?")
+                            functions_main.reproduce_action_sound("sad")
                             functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
                             functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "again") #small movements left and right & riproviamo
                             functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
@@ -460,7 +457,7 @@ with suppress_stdout_stderr():
                     if ((meanAngle >= 0) or (soundDirection == "ECHO")):  # voice detected by BlueCoin
                         print("Human detected in the FOV")
                         count = 4
-                        if meanAngle >= 0:
+                        if meanAngle >= 0 and soundDirection == "FRONT":
                             tracking_a_user = functions_main.human_verification(meanAngle, arduino.old_user, count)  # it check if obstacle detected from sonar is a human
                         elif soundDirection == "ECHO": # check which one of the angle detected corresponds to what the sonar
                             tracking_a_user = functions_main.human_verification(angle, arduino.old_user, count) #it check if obstacle detected from sonar is a human
