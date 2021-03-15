@@ -229,8 +229,9 @@ with suppress_stdout_stderr():
                 if previousAngle >= 0 and prevpreviousAngle >= 0:
                     if abs(previousAngle - prevpreviousAngle) < 100:
                         meanAngle = (previousAngle + prevpreviousAngle) // 2
-                    elif ((previousAngle <= 45) and (previousAngle >= 315) and (prevpreviousAngle <= 45) and (prevpreviousAngle >= 315)): #if back
+                    elif ((previousAngle <= 45) or (previousAngle >= 315)) and ((prevpreviousAngle <= 45) or (prevpreviousAngle >= 315)): #if back
                         meanAngle = 1 #random number on the back
+                        soundDirection = "BACK"
                     else:
                         echo = 1
                         soundDirection = "ECHO"
@@ -244,8 +245,9 @@ with suppress_stdout_stderr():
                 if previousAngle >= 0 and prevpreviousAngle >= 0:
                     if (abs(previousAngle - prevpreviousAngle) + abs(angle - prevpreviousAngle) + abs(previousAngle - angle)) < 200:
                         meanAngle = (angle + previousAngle + prevpreviousAngle) // 3
-                    elif ((angle <= 45) and (angle >= 315) and (previousAngle <= 45) and (previousAngle >= 315) and  (prevpreviousAngle <= 45) and (prevpreviousAngle >= 315)): #if back
+                    elif ((angle <= 45) or (angle >= 315)) and ((previousAngle <= 45) or (previousAngle >= 315)) and  ((prevpreviousAngle <= 45) or (prevpreviousAngle >= 315)): #if back
                         meanAngle = 1 #random number on the back
+                        soundDirection = "BACK"
                     else:
                         echo = 1
                         soundDirection = "ECHO"
@@ -254,8 +256,9 @@ with suppress_stdout_stderr():
                 elif previousAngle >= 0 and prevpreviousAngle < 0:
                     if abs(previousAngle - angle) < 100:
                         meanAngle = (previousAngle + angle) // 2
-                    elif ((previousAngle <= 45) and (previousAngle >= 315) and  (angle <= 45) and (angle >= 315)): #if back
+                    elif ((previousAngle <= 45) or (previousAngle >= 315)) and ((angle <= 45) or (angle >= 315)): #if back
                         meanAngle = 1 #random number on the back
+                        soundDirection = "BACK"
                     else:
                         echo = 1
                         soundDirection = "ECHO"
@@ -264,8 +267,9 @@ with suppress_stdout_stderr():
                 elif previousAngle < 0 and prevpreviousAngle >= 0:
                     if abs(angle - prevpreviousAngle ) < 100:
                         meanAngle = (angle + prevpreviousAngle) // 2
-                    elif ((prevpreviousAngle <= 45) and (prevpreviousAngle >= 315) and  (angle <= 45) and (angle >= 315)): #if back
+                    elif ((prevpreviousAngle <= 45) or (prevpreviousAngle >= 315)) and ((angle <= 45) or (angle >= 315)): #if back
                         meanAngle = 1 #random number on the back
+                        soundDirection = "BACK"
                     else:
                         echo = 1
                         soundDirection = "ECHO"
@@ -273,7 +277,7 @@ with suppress_stdout_stderr():
                         print("echo present")
                 elif previousAngle < 0 and prevpreviousAngle < 0:
                     meanAngle = angle
-            else:
+            elif angle < 0 and previousAngle < 0 and prevpreviousAngle < 0:
                 meanAngle = -100
                 soundDirection = "NONE"
                 print("no voice detected")
@@ -282,7 +286,7 @@ with suppress_stdout_stderr():
             if ((echo == 0) and (meanAngle >= 0)):
                if ((meanAngle >= 160 ) and (meanAngle <= 200)): # sounds from the front
                    soundDirection = "FRONT"
-               elif ((meanAngle <= 200) and (meanAngle >= 315)): # sounds from the right
+               elif ((meanAngle >= 200) and (meanAngle <= 315)): # sounds from the right
                    soundDirection = "RIGHT"
                elif ((meanAngle >= 45) and (meanAngle <= 160)): # sounds from the left
                    soundDirection = "LEFT"
@@ -291,6 +295,8 @@ with suppress_stdout_stderr():
 
             if ((echo == 1) or (meanAngle >= 0)):
                 waitingForSounds = 0
+
+            print("sound Direction: {}".format(soundDirection))
 
             ####-----START HUMAN INTERACTION-----####
             count = 0
