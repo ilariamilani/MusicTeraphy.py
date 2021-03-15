@@ -153,6 +153,7 @@ with suppress_stdout_stderr():
         global child_action
         global good_interaction
         firstTime = True
+        still_searching = 0
         lookTo = ""
         meanAngle = 0
         prevpreviousAngle = 0
@@ -552,6 +553,7 @@ with suppress_stdout_stderr():
                     start_time_out_system = time.time()
                     time_out_system_hum = 0
                 elif time_out_system_hum <= TIME_OUT_HUM and time_out_system<TIME_OUT and Finding_human == False:
+                    still_searching = 0
                     if receiveAction and child_action == "notfound":
                         functions_main.send_uno_lights(arduino.ser1, "angry")
                         functions_main.send_initial_action_arduino("turnBack", arduino.ser, "notfound") # ah sei un oggetto! dove sei?
@@ -593,7 +595,7 @@ with suppress_stdout_stderr():
                                     if waitingForSounds < 4:
                                          if waitingForSounds == 2:
                                              functions_main.send_uno_lights(arduino.ser1, "excited_attract")
-                                             functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "where") # dove sei? dai fatti sentire!
+                                             functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "where") # dove sei? dai fatti sentire! da sostituire con AVVICINATI, NON TI SENTO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                                          waitingForSounds += 1
                                     else:  # if still no sounds it might be just an object I pretend the user if in front but too far for the BlueCoin to hear him
                                         functions_main.send_uno_lights(arduino.ser1, "move")
@@ -647,29 +649,45 @@ with suppress_stdout_stderr():
                                     start_time_MA = time.time()
                                     duration_MA = 0
                                     receiveAction = False
-
                             print("Child Action: " + child_action + " | " + "Robot Action: " + functions_main.current_action)
                         print("Time Out Human {:.1f} / 10 Sec".format(time_out_system_hum) )
                 elif Finding_human == True and time_out_system < TIME_OUT : #if i need to find the child and i'm inside the timout
                     print("INTERACTION LOOP - Looking for a human")
                     #I need to find the human. I start counting for the general TIME_OUT
                     # Run Object Detection
+                    still_searching = 0
                     current_time_out_system = time.time()
                     time_out_system = time_out_system+(current_time_out_system-start_time_out_system)
                     start_time_out_system = current_time_out_system
                     print("Time out: {:.1f} / 40 ".format(time_out_system))
-
-                    if ((meanAngle >= 0) or (soundDirection == "ECHO")):  # this can be replaced with a check if it is human, so this translate to if there is a human
+                    if ((meanAngle >= 0) or (soundDirection == "FRONT")):  # this can be replaced with a check if it is human, so this translate to if there is a human
+                        tracking_a_user = functions_main.human_verification(meanAngle, arduino.old_user, count)  # it check if obstacle detected from sonar is a human
+                        waitingForSounds = 0
+                    elif soundDirection == "ECHO":  # check which one of the angle detected corresponds to what the sonar
+                        waitingForSounds = 0
+                        tracking_a_user = functions_main.human_verification(angle, arduino.old_user, count)  # it check if obstacle detected from sonar is a human
+                        if tracking_a_user == False:
+                            tracking_a_user = functions_main.human_verification(previousAngle, arduino.old_user, count)  # it check if obstacle detected from sonar is a human
+                        if tracking_a_user == False:
+                            tracking_a_user = functions_main.human_verification(prevpreviousAngle, arduino.old_user, count)  # it check if obstacle detected from sonar is a human
+                    if tracking_a_user == True:
                         print("INTERACTION LOOP - Human detected in the FOV")
                         Finding_human = False
                         functions_main.send_uno_lights(arduino.ser1, "excited_attract")
-                        functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "where")
+                        functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "found")
                         time_out_system_hum = 0
                         time_out_system = 0
                     else:
                         print("INTERACTION LOOP - Searching")
+                        still_searching += 1
                         functions_main.send_uno_lights(arduino.ser1, "none")
                         functions_main.send_initial_action_arduino(lookTo, arduino.ser, "none")
+                        if still_searching > 2:
+                            Finding_human = True  # Am i looking for a human?
+                            time_out_system = 0
+                            start_time_out_system = time.time()
+                            time_out_system_hum = 0
+                            interaction = 0
                 elif Finding_human == True and time_out_system>TIME_OUT: #If 'm looking for the children and i run out of time
                     print("Terminating the program")
                     child_action = "QUIT"

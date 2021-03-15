@@ -48,6 +48,7 @@ class AudioActivity:
         self.sequence.append([1./6, 1./6, 1./4, 1./6, 1./6, 1./6]) # ci vuole un fiore                    9
         self.sequence.append([1./4, 1./8, 1./8, 1./4, 1./4])  #tatititata                                 10
         self.sequence.append([1./4, 1./4, 1./2, 1./8, 1./8, 1./4, 1./4]) #queen                           11
+        self.sequence.append([1./4, 1./4, 1./2, 1./8, 1./6, 1./8, 1./8, 1./8]) #queen                     12
         # fra martino, bella lavanderina?
 
 
@@ -76,7 +77,7 @@ class AudioActivity:
     def choice_sequence(self, id):
         self.actual_sequence = ClapAnalyzer(
             self.sequence[id],
-            deviation_threshold=0.2
+            deviation_threshold=0.4
         )
         self.actual_sequence.on_clap_sequence(self.on_sequence_detected)
 
