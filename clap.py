@@ -57,9 +57,9 @@ class ClapAnalyzer:
                 j += 1
 
             if self.buffer_size > 4:
-                self.deviation_threshold = 0.6
-            else:
                 self.deviation_threshold = 0.4
+            else:
+                self.deviation_threshold = 0.2
             print("deviation_threshold =")
             print(self.deviation_threshold)
 

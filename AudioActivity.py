@@ -77,7 +77,7 @@ class AudioActivity:
     def choice_sequence(self, id):
         self.actual_sequence = ClapAnalyzer(
             self.sequence[id],
-            deviation_threshold=0.4
+            deviation_threshold=0.2
         )
         self.actual_sequence.on_clap_sequence(self.on_sequence_detected)
 

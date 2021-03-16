@@ -209,7 +209,6 @@ with suppress_stdout_stderr():
             angle_acquisition = 0
             while angle_acquisition < 3:
                 angle_acquisition += 1
-                echo = 0
                 prevpreviousAngle = previousAngle
                 previousAngle = angle
                 #ANGLE from BlueCoin
@@ -226,6 +225,7 @@ with suppress_stdout_stderr():
                 print("angle from BlueCoin=  {:.1f}".format(angle) )
 
             # check for voice's direction and echo
+            echo = 0
             if angle < 0 and (previousAngle >= 0 or prevpreviousAngle >= 0):
                 if previousAngle >= 0 and prevpreviousAngle >= 0:
                     if abs(previousAngle - prevpreviousAngle) < 100:
