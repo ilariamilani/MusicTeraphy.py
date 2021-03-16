@@ -29,13 +29,13 @@ nextlevel = ["audioYolk/prontoperilprossimolivello.wav", "audioYolk/orasaraunpop
 
 def human_verification(angle_mean, user, count): #return if the object detected by sonar is a human
     #print("angle: " + str(angle_mean)+", User:" + user)
-    if (( user== "front") and ((angle_mean >= 170 ) and (angle_mean <= 190)) and (count >= 2)): # 180+-20
+    if (( user== "front") and ((angle_mean >= 165 ) and (angle_mean <= 195)) and (count >= 2)): # 180+-20
         print("Human front")
         tracking_a_user = True
-    elif (( user== "right") and (angle_mean >= 190) and (angle_mean <= 315)  and (count >= 2)): # 90+-
+    elif (( user== "right") and (angle_mean >= 195) and (angle_mean <= 315)  and (count >= 2)): # 90+-
         print("human right")
         tracking_a_user = True
-    elif ((user == "left") and (angle_mean >= 45) and (angle_mean <= 170) and (count >= 2)): # 270+-
+    elif ((user == "left") and (angle_mean >= 45) and (angle_mean <= 165) and (count >= 2)): # 270+-
         print("Human left")
         tracking_a_user = True
     else:

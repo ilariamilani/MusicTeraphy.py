@@ -281,11 +281,11 @@ with suppress_stdout_stderr():
             print("meanAngle: {:.1f}".format(meanAngle))
 
             if ((echo == 0) and (meanAngle >= 0)):
-               if ((meanAngle >= 170 ) and (meanAngle <= 190)): # sounds from the front
+               if ((meanAngle >= 165 ) and (meanAngle <= 195)): # sounds from the front
                    soundDirection = "FRONT"
-               elif ((meanAngle >= 190) and (meanAngle <= 315)): # sounds from the right
+               elif ((meanAngle >= 195) and (meanAngle <= 315)): # sounds from the right
                    soundDirection = "RIGHT"
-               elif ((meanAngle >= 45) and (meanAngle <= 170)): # sounds from the left
+               elif ((meanAngle >= 45) and (meanAngle <= 165)): # sounds from the left
                    soundDirection = "LEFT"
                elif (((meanAngle >= 315) or (meanAngle <= 45))): # sounds from the back
                    soundDirection = "BACK"
@@ -624,13 +624,13 @@ with suppress_stdout_stderr():
                                 time_out_system_hum = 0
                             if (soundDirection == "RIGHT"):
                                 lookTo = "rotateRight"
-                                time_out_system_hum = time_out_system_hum + 22
+                                time_out_system_hum = 10
                             elif (soundDirection == "LEFT"):
                                 lookTo = "rotateLeft"
-                                time_out_system_hum = time_out_system_hum + 22
+                                time_out_system_hum = 10
                             elif (soundDirection == "BACK"):
                                 lookTo = "turnBack"
-                                time_out_system_hum = time_out_system_hum + 18 # might have been echo
+                                time_out_system_hum = 10 # might have been echo
                             print("INTERACTION LOOP - Correctly interacting, waiting to receive an action")
 
                             if firstTime:
@@ -655,7 +655,7 @@ with suppress_stdout_stderr():
                                     receiveAction = False
                             print("Child Action: " + child_action + " | " + "Robot Action: " + functions_main.current_action)
                         print("Time Out Human {:.1f} / 10 Sec".format(time_out_system_hum) )
-                elif Finding_human == True and time_out_system < TIME_OUT : #if i need to find the child and i'm inside the timout
+                if Finding_human == True and time_out_system < TIME_OUT : #if i need to find the child and i'm inside the timout
                     print("INTERACTION LOOP - Looking for a human")
                     #I need to find the human. I start counting for the general TIME_OUT
                     # Run Object Detection
@@ -677,7 +677,7 @@ with suppress_stdout_stderr():
                         print("INTERACTION LOOP - Human detected in the FOV")
                         Finding_human = False
                         functions_main.send_uno_lights(arduino.ser1, "excited_attract")
-                        functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "found")
+                        functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "excited")
                         time_out_system_hum = 0
                         time_out_system = 0
                         still_searching = 0
