@@ -111,7 +111,7 @@ class suppress_stdout_stderr(object):
     compiled C/Fortran sub-function.
        This will not suppress raised exceptions, since exceptions are printed
     to stderr just before a script exits, and after the context manager has
-    exited (at least, I think that is why it lets exceptions through).
+    excited (at least, I think that is why it lets exceptions through).
     '''
 
     def __init__(self):
@@ -369,7 +369,7 @@ with suppress_stdout_stderr():
                             functions_main.send_initial_action_arduino("openToRight", arduino.ser, "noplay") #back left & non giochi con me? :(
                             functions_main.send_initial_action_arduino("openBackToLeft", arduino.ser, "none") #forth left
                             functions_main.send_uno_lights(arduino.ser1, "happy") #rainbow lights
-                            functions_main.send_initial_action_arduino("backForth", arduino.ser, "giochiamo") #small backforth
+                            functions_main.send_initial_action_arduino("backForth", arduino.ser, "excited") #small backforth
                             child_not_involved += 1
                             if child_not_involved > 4:
                                 print("the child doesn't want to play or didn't understand the activity")
@@ -382,6 +382,9 @@ with suppress_stdout_stderr():
                             functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
                             functions_main.send_initial_action_arduino("happy", arduino.ser, "good")
                             child_not_involved = 0
+                            if ActivityLevel != 3 and (song % 2) != 0: # not reproducing the same song if the child altready reproduced it well
+                                song += 1
+                                NSongIdentified += 1
                         else:
                             #if (song % 2) == 0 and correctSong < 1:  # if not even 1 song over 2 has been correctly reproduced
                             print("the child did not reproduced the song well")
@@ -412,7 +415,7 @@ with suppress_stdout_stderr():
                             functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "again") #small movements left and right & riproviamo
                             functions_main.send_uno_lights(arduino.ser1, "excited_attract") # random lights
                             try_again += 1
-                            if try_again < 4:
+                            if try_again < 3:
                                 # if the child was not able to pass to the next level, the same will be reproposed
                                 Nid -= ((NSongsinLevel - 1) // 2)
                             else: # if the level has been proposed too many times, pass to the next level
@@ -453,7 +456,7 @@ with suppress_stdout_stderr():
 
             if interaction != 2 and not MusicalActivity: #If I'm not interacting with the human
                 print("Interaction != 2, I'm not interacting with the human")
-                if arduino.old_user != "none" and arduino.new_dist < 110.0: #if an object is detected by the sonar, and it is closer than x, check if it is a human
+                if arduino.old_user != "none" and arduino.new_dist < 120.0: #if an object is detected by the sonar, and it is closer than x, check if it is a human
                     print("Object detected by sonars")
                     if ((meanAngle >= 0) or (soundDirection == "ECHO")):  # voice detected by BlueCoin
                         print("Human detected in the FOV")
@@ -656,7 +659,6 @@ with suppress_stdout_stderr():
                     print("INTERACTION LOOP - Looking for a human")
                     #I need to find the human. I start counting for the general TIME_OUT
                     # Run Object Detection
-                    still_searching = 0
                     current_time_out_system = time.time()
                     time_out_system = time_out_system+(current_time_out_system-start_time_out_system)
                     start_time_out_system = current_time_out_system
@@ -678,6 +680,7 @@ with suppress_stdout_stderr():
                         functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "found")
                         time_out_system_hum = 0
                         time_out_system = 0
+                        still_searching = 0
                     else:
                         print("INTERACTION LOOP - Searching")
                         still_searching += 1

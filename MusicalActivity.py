@@ -137,7 +137,7 @@ if __name__ == '__main__':
     TIME_OUT_SONG = 12.0  # maximum time given to reproduce a song
     answerTime = 0
     TIME_OUT_song = 0
-    correctSong = 0
+    #correctSong = 0
     ActivityLevel = 1
     identification_time = 0
     while ActivityLevel < 4:
@@ -168,7 +168,7 @@ if __name__ == '__main__':
             print(Nid)
             if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
                 Nid += 1
-                correctSong = 0
+                #correctSong = 0
             while ((activity.elapsed_time < answerTime or activity.silence < 15) and activity.elapsed_time < TIME_OUT_song): #wait in case the child is still playing (making noises)
                 time.sleep(1.0)
                 if activity.sequence_identified > 0:
@@ -182,7 +182,7 @@ if __name__ == '__main__':
                     continue
             activity.stop()
             # reaction of the robot to the 2 songs just performed
-            correctSong = correctSong + activity.sequence_identified
+            #correctSong = correctSong + activity.sequence_identified
             if (activity.sequence_identified == 0) and (activity.other_activity > 20 or activity.Nbeat < 3):
                 print("the child is not performing the activity")
                 reproduce_song(MA_interactionLevel, 7)  # sad :(
@@ -192,10 +192,13 @@ if __name__ == '__main__':
                 print("song well reproduced by the child")
                 reproduce_song(MA_interactionLevel, 1) #wow bravo!
                 child_not_involved = 0
+                if ActivityLevel != 3 and (song % 2) != 0:  # not reproducing the same song if the child altready reproduced it well
+                    song += 1
+                    NSongIdentified += 1
             else:
-                if (song % 2) == 0 and correctSong < 1: #if not even 1 song over 2 has been correctly reproduced
-                    print("song NOT well reproduced by the child")
-                    reproduce_song(MA_interactionLevel, 3)  # riproviamo
+                #if (song % 2) == 0 and correctSong < 1: #if not even 1 song over 2 has been correctly reproduced
+                print("song NOT well reproduced by the child")
+                reproduce_song(MA_interactionLevel, 3)  # riproviamo
             print(".")
             print("next song in the same level")
             print(".")
@@ -219,7 +222,7 @@ if __name__ == '__main__':
                 print(".")
                 reproduce_song(MA_interactionLevel, 3)  # riproviamo
                 try_again += 1
-                if try_again < 4:
+                if try_again < 3:
                     # if the child was not able to pass to the next level, the same will be reproposed
                     Nid -= ((NSongsinLevel - 1) // 2)
                 else:  # if the level has been proposed too many times, pass to the next level
