@@ -87,7 +87,7 @@ def reproduce_action_sound(action):
         elif (action == "interested_excited"):
             audio = random.choice(giochiamo)
             PlayAudio().play(audio)
-        elif (action == "happy"):  # after receiving a hug
+        elif (action == "happy"):
             audio = random.choice(happy)
             PlayAudio().play(audio)
         elif (action == "very_scared"):
