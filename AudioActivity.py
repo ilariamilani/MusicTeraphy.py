@@ -2,6 +2,7 @@ import pyaudio
 import audioop
 import math
 import time
+import os
 #from timer import Timer
 from clap import ClapAnalyzer
 
@@ -14,6 +15,34 @@ THRESHOLD = 60 #45
 LOW_THRESHOLD = 55 #35
 
 
+class suppress_stdout_stderr(object):
+    '''
+    A context manager for doing a "deep suppression" of stdout and stderr in
+    Python, i.e. will suppress all print, even if the print originates in a
+    compiled C/Fortran sub-function.
+       This will not suppress raised exceptions, since exceptions are printed
+    to stderr just before a script exits, and after the context manager has
+    excited (at least, I think that is why it lets exceptions through).
+    '''
+
+    def __init__(self):
+        # Open a pair of null files
+        self.null_fds = [os.open(os.devnull, os.O_RDWR) for x in range(2)]
+        # Save the actual stdout (1) and stderr (2) file descriptors.
+        self.save_fds = [os.dup(1), os.dup(2)]
+
+    def __enter__(self):
+        # Assign the null pointers to stdout and stderr.
+        os.dup2(self.null_fds[0], 1)
+        os.dup2(self.null_fds[1], 2)
+
+    def __exit__(self, *_):
+        # Re-assign the real stdout/stderr back to (1) and (2)
+        os.dup2(self.save_fds[0], 1)
+        os.dup2(self.save_fds[1], 2)
+        # Close all file descriptors
+        for fd in self.null_fds + self.save_fds:
+            os.close(fd)
 class AudioActivity:
 
     def __init__(self):
@@ -53,25 +82,26 @@ class AudioActivity:
 
 
     def start(self, id):
-        self.initialize_sequences()
-        self.p = pyaudio.PyAudio()  # Create an interface to PortAudio
+        with suppress_stdout_stderr:
+            self.initialize_sequences()
+            self.p = pyaudio.PyAudio()  # Create an interface to PortAudio
 
-        # open your audio stream
-        self.stream = self.p.open(format=FORMAT,
-                        rate=RATE,
-                        channels=CHANNELS,
-                        input=True,
-                        frames_per_buffer=CHUNK,
-                        stream_callback=self.audio_callback)
-        self.choice_sequence(id)
-        # start the stream
-        self.stream.start_stream()
+            # open your audio stream
+            self.stream = self.p.open(format=FORMAT,
+                            rate=RATE,
+                            channels=CHANNELS,
+                            input=True,
+                            frames_per_buffer=CHUNK,
+                            stream_callback=self.audio_callback)
+            self.choice_sequence(id)
+            # start the stream
+            self.stream.start_stream()
 
-        # timer start
-        #self.t.start()  # alla fine sottraggo il valore temporale del primo battito
-        self.t1 = time.perf_counter()
-        self.t2 = 0
-        print("start timer")
+            # timer start
+            #self.t.start()  # alla fine sottraggo il valore temporale del primo battito
+            self.t1 = time.perf_counter()
+            self.t2 = 0
+            print("start timer")
 
 
     def choice_sequence(self, id):
@@ -94,53 +124,54 @@ class AudioActivity:
 
 
     def audio_callback(self, in_data, frame_count, time_info, status):
-        rms = audioop.rms(in_data, 2)  # quadratic mean of the data. width=2 for format=paInt16
-        # print(rms)
-        if rms == 0:
-            decibel = 0
-        else:
-            decibel = 20 * math.log10(rms)  # transforms into db
-        # check level against threshold
-        #print(decibel)
-        if decibel > THRESHOLD:
-            self.noise += 1
-            #elapsed_time = self.t.elapsed_time()
-            self.t2 = time.perf_counter()
-            self.elapsed_time = self.t2 - self.t1
-            if self.Nbeat == 0:
-                self.add_clap(self.elapsed_time)
-                if self.sequence_identified > 0:
-                    print("Found")
-                self.clap_time.append(self.elapsed_time)
-                print("performance started")
-                print("clap")
-                print(self.clap_time[self.Nbeat])
-                self.Nbeat += 1
-                self.silence = 0
+        with suppress_stdout_stderr:
+            rms = audioop.rms(in_data, 2)  # quadratic mean of the data. width=2 for format=paInt16
+            # print(rms)
+            if rms == 0:
+                decibel = 0
             else:
-                deltaT = self.elapsed_time - self.clap_time[self.Nbeat - 1]
-                if (deltaT > 0.093) and (self.silence >= 1):
-                    # test a 85 BPM devo avere un battito ogni 0.7 sec
-                    print("clap")
-                    self.clap_time.append(self.elapsed_time)
-                    print(self.clap_time[self.Nbeat])
-                    print(self.clap_time[:])
+                decibel = 20 * math.log10(rms)  # transforms into db
+            # check level against threshold
+            #print(decibel)
+            if decibel > THRESHOLD:
+                self.noise += 1
+                #elapsed_time = self.t.elapsed_time()
+                self.t2 = time.perf_counter()
+                self.elapsed_time = self.t2 - self.t1
+                if self.Nbeat == 0:
                     self.add_clap(self.elapsed_time)
                     if self.sequence_identified > 0:
                         print("Found")
+                    self.clap_time.append(self.elapsed_time)
+                    print("performance started")
+                    print("clap")
+                    print(self.clap_time[self.Nbeat])
                     self.Nbeat += 1
                     self.silence = 0
-                if self.silence == 0 and self.noise >= 10:
-                    self.other_activity += 1
-                    print("other activity is detected")
-        elif decibel < LOW_THRESHOLD:
-            self.silence += 1
-            self.noise = 0
-            self.t2 = time.perf_counter()
-            self.elapsed_time = self.t2 - self.t1
-            #if self.silence > 50:
-                #print("silence")
-        return in_data, pyaudio.paContinue
+                else:
+                    deltaT = self.elapsed_time - self.clap_time[self.Nbeat - 1]
+                    if (deltaT > 0.093) and (self.silence >= 1):
+                        # test a 85 BPM devo avere un battito ogni 0.7 sec
+                        print("clap")
+                        self.clap_time.append(self.elapsed_time)
+                        print(self.clap_time[self.Nbeat])
+                        print(self.clap_time[:])
+                        self.add_clap(self.elapsed_time)
+                        if self.sequence_identified > 0:
+                            print("Found")
+                        self.Nbeat += 1
+                        self.silence = 0
+                    if self.silence == 0 and self.noise >= 10:
+                        self.other_activity += 1
+                        print("other activity is detected")
+            elif decibel < LOW_THRESHOLD:
+                self.silence += 1
+                self.noise = 0
+                self.t2 = time.perf_counter()
+                self.elapsed_time = self.t2 - self.t1
+                #if self.silence > 50:
+                    #print("silence")
+            return in_data, pyaudio.paContinue
 
     def stop(self):
         self.stream.stop_stream()

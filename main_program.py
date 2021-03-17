@@ -165,7 +165,6 @@ with suppress_stdout_stderr():
         tooCloseCount = 0
         tooFarCount = 0
         NSongIdentified = 0
-        #correctSong = 0
         try_again = 0
         waitingForSounds = 0
         NSongsinLevel = 7  # number of songs in a level
@@ -177,7 +176,7 @@ with suppress_stdout_stderr():
         TIME_OUT_MA = 9.0
         time_end_MA = 0
         angle_acquisition = 0
-        identification_time = 0
+        #identification_time = 0
         time_goodInteraction = 0
         time_loop = 0
         child_not_involved = 0
@@ -332,13 +331,11 @@ with suppress_stdout_stderr():
                             break
                         functions_main.send_uno_lights(arduino.ser1, "angry") # red lights
                         functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "myturn")  # small movements left and right & ora tocca a me
-                        #functions_main.send_initial_action_arduino("move", arduino.ser, "none")  # forth
                         functions_main.reproduce_song(ActivityLevel, song)  # reproducing the song
-                        functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
                         functions_main.send_initial_action_arduino("backForth", arduino.ser, "yourturn") #small backforth & ora tocca a te
-                        #functions_main.send_initial_action_arduino("scared", arduino.ser, "none")  # back
-                        #if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
-                        if song == 1: #before every firts song of the level
+                        functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
+                        # if song == 1: #before every firts song of the level
+                        if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
                             functions_main.reproduce_action_sound("play") # suona con me! batti a tempo
                         # BEAT RECOGNITION
                         activity = AudioActivity()
@@ -347,22 +344,20 @@ with suppress_stdout_stderr():
                         print(Nid)
                         if (song % 2) != 0:  # every time a new song is played (odd number)(every song is reproduced twice)
                             Nid += 1
-                            #correctSong = 0
                         while ((activity.elapsed_time < answerTime or activity.silence < 15) and activity.elapsed_time < TIME_OUT_song): #wait in case the child is still playing (making noises)
                             time.sleep(1.0)
                             if activity.sequence_identified > 0:
                                 print("Bravoooo - Song correctly reproduced")
                                 functions_main.send_uno_lights(arduino.ser1, "interested_excited") # green lights
                                 NSongIdentified += 1
-                                time.sleep(1.0)
-                                identification_time = time.perf_counter()
+                                #time.sleep(1.0)
+                                #identification_time = time.perf_counter()
                                 break
                         if activity.sequence_identified > 0:
-                            while activity.silence < 15 and (identification_time + 1.5 > activity.elapsed_time):  # wait in case the child is still playing
+                            while activity.silence < 15 and activity.elapsed_time < TIME_OUT_song:  # wait in case the child is still playing # oppure and (identification_time + 1.5 > activity.elapsed_time)
                                 continue
                         activity.stop()
                         #reaction of the robot to the 2 songs just performed
-                        #correctSong = correctSong + activity.sequence_identified
                         if (activity.sequence_identified == 0) and (activity.other_activity > 20 or activity.Nbeat < 3):
                             print("the child is not performing the activity")
                             functions_main.send_uno_lights(arduino.ser1, "sad") # blue lights
@@ -386,7 +381,6 @@ with suppress_stdout_stderr():
                                 song += 1
                                 NSongIdentified += 1
                         else:
-                            #if (song % 2) == 0 and correctSong < 1:  # if not even 1 song over 2 has been correctly reproduced
                             print("the child did not reproduced the song well")
                             functions_main.send_uno_lights(arduino.ser1, "angry")  # red lights
                             functions_main.send_initial_action_arduino("excited_attract", arduino.ser, "again")  # small movements left and right & riproviamo
@@ -456,6 +450,7 @@ with suppress_stdout_stderr():
 
             if interaction != 2 and not MusicalActivity: #If I'm not interacting with the human
                 print("Interaction != 2, I'm not interacting with the human")
+                print("arduino.new_dist !!!!!!!!!!!!!!!!!!!!!!!!! DISTANZA: {:.1f}".format(arduino.new_dist))
                 if arduino.old_user != "none" and arduino.new_dist < 120.0: #if an object is detected by the sonar, and it is closer than x, check if it is a human
                     print("Object detected by sonars")
                     if ((meanAngle >= 0) or (soundDirection == "ECHO")):  # voice detected by BlueCoin

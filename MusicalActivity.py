@@ -10,7 +10,7 @@ from audioplayer import PlayAudio
 #print(os.path.dirname(os.path.abspath(__file__)))
 #os.chdir(os.path.dirname(os.path.abspath(__file__)))  # change working directory
 
-bravo = ["audioYolk/bravissimo.wav", "audioYolk/wowchebravo.wav", "audioYolk/ohchebello.wav", "audioYolk/evviva.wav"]
+bravo = ["audioYolk/bravissimo.wav", "audioYolk/wowchebravo.wav", "audioYolk/evviva.wav"]
 riprova = ["audioYolk/riproviamo.wav", "audioYolk/dairiprova.wav", "audioYolk/daidinuovo.wav", "audioYolk/provaancora.wav"]
 suona = ["audioYolk/battiatempo.wav", "audioYolk/suonaaritmo.wav", "audioYolk/daivaiatempo.wav"]
 canta = ["audioYolk/cantaconme.wav", "audioYolk/cantiamo.wav"]

@@ -9,7 +9,7 @@ next_action = "none"
 state_user = ""
 current_action = "none"
 
-bravo = ["audioYolk/bravissimo.wav", "audioYolk/wowchebravo.wav", "audioYolk/ohchebello.wav", "audioYolk/evviva.wav"]
+bravo = ["audioYolk/bravissimo.wav", "audioYolk/wowchebravo.wav", "audioYolk/evviva.wav"]
 riprova = ["audioYolk/riproviamo.wav", "audioYolk/dairiprova.wav", "audioYolk/daidinuovo.wav", "audioYolk/provaancora.wav"]
 suona = ["audioYolk/battiatempo.wav", "audioYolk/suonaaritmo.wav", "audioYolk/daivaiatempo.wav"]
 canta = ["audioYolk/cantaconme.wav", "audioYolk/cantiamo.wav"]
@@ -195,8 +195,8 @@ def reproduce_song(level, Nsong):
         elif (Nsong == 6):
             PlayAudio().play("sounds/opopop.wav")
         elif (Nsong == 7):
-            PlayAudio().play("sounds/founding.wav")
-            #PlayAudio().play("sounds/44Gatti.wav")
+            #PlayAudio().play("sounds/founding.wav")
+            PlayAudio().play("sounds/44Gatti.wav")
     elif (level == 2):
         if (Nsong == 0):
             PlayAudio().play("sounds/AttentiallaMusica2.wav")
@@ -213,8 +213,8 @@ def reproduce_song(level, Nsong):
         elif (Nsong == 6):
             PlayAudio().play("sounds/BrillaBrillaStellina.wav")
         elif(Nsong == 7):
-            PlayAudio().play("sounds/founding.wav")
-            #PlayAudio().play("sounds/PulcinoBallerino.wav")
+            #PlayAudio().play("sounds/founding.wav")
+            PlayAudio().play("sounds/PulcinoBallerino.wav")
     elif (level == 3):
         if (Nsong == 0):
             PlayAudio().play("sounds/AttentiallaMusica3.wav")
@@ -231,6 +231,6 @@ def reproduce_song(level, Nsong):
         elif (Nsong == 6):
             PlayAudio().play("sounds/vecchiaFattoria2.wav")
         elif (Nsong == 7):
-            PlayAudio().play("sounds/founding.wav")
-            #PlayAudio().play("sounds/TartarugaSprint.wav")
+            #PlayAudio().play("sounds/founding.wav")
+            PlayAudio().play("sounds/TartarugaSprint.wav")
     
